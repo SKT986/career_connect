@@ -154,6 +154,76 @@ export async function getMentorPosts(limit = 10): Promise<FeedPost[]> {
   });
 }
 
+export async function getBookmarkedPosts(userId: string): Promise<FeedPost[]> {
+  const supabase = await createClient();
+
+  const { data: bookmarks, error: bookmarksError } = await supabase
+    .from("bookmarks")
+    .select("post_id, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (bookmarksError) throw bookmarksError;
+  if (bookmarks.length === 0) return [];
+
+  const postIds = bookmarks.map((b) => b.post_id);
+
+  const { data: posts, error } = await supabase
+    .from("posts")
+    .select("id, category, content, image_url, created_at, is_anonymous, author_id")
+    .in("id", postIds);
+
+  if (error) throw error;
+  if (posts.length === 0) return [];
+
+  const authorIds = Array.from(new Set(posts.map((p) => p.author_id)));
+
+  const [{ data: profiles }, { data: likeRows }, { data: commentRows }, { data: likedRows }] = await Promise.all([
+    supabase.from("profiles").select("id, display_name, anonymous_alias, avatar_url").in("id", authorIds),
+    supabase.from("likes").select("post_id").in("post_id", postIds),
+    supabase.from("comments").select("post_id").in("post_id", postIds),
+    supabase.from("likes").select("post_id").eq("user_id", userId).in("post_id", postIds),
+  ]);
+
+  const profileById = new Map((profiles ?? []).map((p) => [p.id, p]));
+  const likeCountByPost = new Map<string, number>();
+  for (const row of likeRows ?? []) {
+    likeCountByPost.set(row.post_id, (likeCountByPost.get(row.post_id) ?? 0) + 1);
+  }
+  const commentCountByPost = new Map<string, number>();
+  for (const row of commentRows ?? []) {
+    commentCountByPost.set(row.post_id, (commentCountByPost.get(row.post_id) ?? 0) + 1);
+  }
+  const likedSet = new Set((likedRows ?? []).map((r) => r.post_id));
+  const postById = new Map(posts.map((p) => [p.id, p]));
+
+  // Preserve bookmark order (most recently saved first) rather than post order.
+  return bookmarks
+    .map((b) => postById.get(b.post_id))
+    .filter((row): row is NonNullable<typeof row> => Boolean(row))
+    .map((row) => {
+      const profile = profileById.get(row.author_id);
+      const authorLabel =
+        row.is_anonymous || !profile ? (profile?.anonymous_alias ?? "Anonymous") : profile.display_name;
+
+      return {
+        id: row.id,
+        category: row.category,
+        content: row.content,
+        imageUrl: row.image_url,
+        createdAt: row.created_at,
+        isAnonymous: row.is_anonymous,
+        authorId: row.author_id,
+        authorLabel,
+        authorAvatarUrl: row.is_anonymous ? null : (profile?.avatar_url ?? null),
+        likeCount: likeCountByPost.get(row.id) ?? 0,
+        commentCount: commentCountByPost.get(row.id) ?? 0,
+        likedByViewer: likedSet.has(row.id),
+        bookmarkedByViewer: true,
+      };
+    });
+}
+
 export async function getPostById(postId: string): Promise<FeedPost | null> {
   const supabase = await createClient();
   const { data: row, error } = await supabase

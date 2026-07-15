@@ -1,4 +1,10 @@
-import type { InterviewDifficulty, InterviewMode, PostCategory } from "@/types/database.types";
+import type {
+  AiFunctionType,
+  InterviewDifficulty,
+  InterviewMode,
+  PostCategory,
+  ResumeLanguage,
+} from "@/types/database.types";
 
 export interface FeedPost {
   id: string;
@@ -92,4 +98,17 @@ export interface PromotableStudent {
   profileId: string;
   displayName: string;
   universityEmail: string | null;
+}
+
+export interface ResumeVersionSummary {
+  id: string;
+  title: string;
+  language: ResumeLanguage;
+  createdAt: string;
+}
+
+export interface AiUsageStats {
+  totalMessages: number;
+  byFunctionType: { functionType: AiFunctionType; count: number }[];
+  lastUsedAt: string | null;
 }

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Users, FileText, MessageSquare, ShieldCheck, UserPlus, TrendingUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
-import { KpiCard } from "@/components/admin/kpi-card";
+import { KpiCard } from "@/components/shared/kpi-card";
 import { ActivityLineChart } from "@/components/admin/activity-line-chart";
 import { CategoryBreakdownChart } from "@/components/admin/category-breakdown-chart";
 import { MentorVerificationPanel } from "@/components/admin/mentor-verification-panel";
