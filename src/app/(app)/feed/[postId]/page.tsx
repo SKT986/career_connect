@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getPostById, getCommentsForPost } from "@/services/postsService";
 import { getCurrentUserRole } from "@/services/mentorService";
+import { getViewerPreferences } from "@/services/profileService";
 import { PostCard } from "@/components/feed/post-card";
 import { CommentList } from "@/components/feed/comment-list";
 import { CommentComposer } from "@/components/feed/comment-composer";
@@ -17,7 +18,11 @@ export default async function PostDetailPage({
   const post = await getPostById(postId);
   if (!post) notFound();
 
-  const [comments, role] = await Promise.all([getCommentsForPost(postId), getCurrentUserRole()]);
+  const [comments, role, { defaultAnonymous }] = await Promise.all([
+    getCommentsForPost(postId),
+    getCurrentUserRole(),
+    getViewerPreferences(),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
@@ -36,7 +41,11 @@ export default async function PostDetailPage({
         <h2 className="text-sm font-semibold text-muted-foreground">
           {comments.length} {comments.length === 1 ? "reply" : "replies"}
         </h2>
-        <CommentComposer postId={postId} allowIdentityReveal={role === "mentor"} />
+        <CommentComposer
+          postId={postId}
+          allowIdentityReveal={role === "mentor"}
+          defaultAnonymous={defaultAnonymous}
+        />
         <CommentList comments={comments} />
       </div>
     </div>

@@ -9,10 +9,18 @@ import { createCommentAction, type PostActionState } from "@/services/postsActio
 
 const initialState: PostActionState = {};
 
-export function CommentComposer({ postId, allowIdentityReveal = false }: { postId: string; allowIdentityReveal?: boolean }) {
+export function CommentComposer({
+  postId,
+  allowIdentityReveal = false,
+  defaultAnonymous = true,
+}: {
+  postId: string;
+  allowIdentityReveal?: boolean;
+  defaultAnonymous?: boolean;
+}) {
   const action = createCommentAction.bind(null, postId);
   const [state, formAction] = useActionState(action, initialState);
-  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [isAnonymous, setIsAnonymous] = useState(defaultAnonymous);
 
   return (
     <form action={formAction} className="space-y-2">

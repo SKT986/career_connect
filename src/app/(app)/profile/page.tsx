@@ -1,12 +1,28 @@
-import { ComingSoon } from "@/components/shared/coming-soon";
-import { User } from "lucide-react";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getMyProfile } from "@/services/profileService";
+import { ProfileForm } from "@/components/profile/profile-form";
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const profile = await getMyProfile(user.id);
+  if (!profile) redirect("/login");
+
   return (
-    <ComingSoon
-      icon={User}
-      title="Profile"
-      description="A full profile editor — avatar, bio, skills, accommodations, and privacy controls — is coming soon."
-    />
+    <div className="mx-auto max-w-xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Profile</h1>
+        <p className="text-sm text-muted-foreground">
+          This is what other students and mentors see when you post or comment non-anonymously.
+        </p>
+      </div>
+
+      <ProfileForm profile={profile} />
+    </div>
   );
 }

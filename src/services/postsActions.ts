@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createReplyNotification } from "@/services/notificationsService";
 import type { PostCategory } from "@/types/database.types";
 
 export interface PostActionState {
@@ -72,6 +73,17 @@ export async function createCommentAction(
   });
 
   if (error) return { error: "Something went wrong commenting. Please try again." };
+
+  const { data: post } = await supabase.from("posts").select("author_id").eq("id", postId).maybeSingle();
+  if (post) {
+    await createReplyNotification({
+      postId,
+      postAuthorId: post.author_id,
+      commenterId: user.id,
+      isAnonymous,
+      commentExcerpt: content,
+    });
+  }
 
   revalidatePath(`/feed/${postId}`);
   revalidatePath("/feed");

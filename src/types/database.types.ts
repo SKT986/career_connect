@@ -60,6 +60,8 @@ export type ProfileRow = {
   avatar_url: string | null;
   bio: string | null;
   verified_at: string | null;
+  default_anonymous: boolean;
+  notifications_enabled: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -214,7 +216,10 @@ export type SettingsRow = {
 export type Database = {
   public: {
     Tables: {
-      profiles: Table<ProfileRow, "created_at" | "updated_at" | "role" | "display_name" | "anonymous_alias">;
+      profiles: Table<
+        ProfileRow,
+        "created_at" | "updated_at" | "role" | "display_name" | "anonymous_alias" | "default_anonymous" | "notifications_enabled"
+      >;
       accessibility_preferences: Table<AccessibilityPreferencesRow, "dark_mode" | "font_scale" | "high_contrast" | "language" | "screen_reader_optimized" | "updated_at">;
       posts: Table<PostRow, "id" | "created_at" | "updated_at" | "is_anonymous" | "category">;
       comments: Table<CommentRow, "id" | "created_at" | "is_anonymous">;

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Menu, Moon, Sun, ALargeSmall, Contrast, LogOut } from "lucide-react";
+import { Menu, Moon, Sun, ALargeSmall, Contrast, LogOut, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -23,20 +23,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
 import { useAccessibility } from "@/hooks/use-accessibility";
+import { useUnreadNotificationCount } from "@/hooks/use-unread-notification-count";
 import { createClient } from "@/lib/supabase/client";
 
 export function Topbar({
+  userId,
   displayName,
   avatarUrl,
   role,
+  initialUnreadCount,
 }: {
+  userId: string;
   displayName: string;
   avatarUrl: string | null;
   role: string;
+  initialUnreadCount: number;
 }) {
   const { theme, setTheme } = useTheme();
   const { fontScale, setFontScale, highContrast, setHighContrast } = useAccessibility();
   const router = useRouter();
+  const unreadCount = useUnreadNotificationCount(userId, initialUnreadCount);
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -66,6 +72,26 @@ export function Topbar({
       <div className="flex-1" />
 
       <div className="flex items-center gap-1">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
+              onClick={() => router.push("/notifications")}
+            >
+              <Bell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium text-destructive-foreground">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Notifications</TooltipContent>
+        </Tooltip>
+
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

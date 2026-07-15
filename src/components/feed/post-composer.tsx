@@ -28,11 +28,11 @@ import { createPostAction, type PostActionState } from "@/services/postsActions"
 
 const initialState: PostActionState = {};
 
-export function PostComposer() {
+export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: boolean }) {
   const [open, setOpen] = useState(false);
   const [state, formAction] = useActionState(createPostAction, initialState);
   const [category, setCategory] = useState("job_hunting");
-  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [isAnonymous, setIsAnonymous] = useState(defaultAnonymous);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

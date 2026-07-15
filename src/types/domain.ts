@@ -2,8 +2,10 @@ import type {
   AiFunctionType,
   InterviewDifficulty,
   InterviewMode,
+  NotificationType,
   PostCategory,
   ResumeLanguage,
+  UserRole,
 } from "@/types/database.types";
 
 export interface FeedPost {
@@ -111,4 +113,24 @@ export interface AiUsageStats {
   totalMessages: number;
   byFunctionType: { functionType: AiFunctionType; count: number }[];
   lastUsedAt: string | null;
+}
+
+export interface NotificationItem {
+  id: string;
+  type: NotificationType;
+  payload: Record<string, unknown>;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface ProfileSummary {
+  id: string;
+  role: UserRole;
+  displayName: string;
+  universityEmail: string | null;
+  avatarUrl: string | null;
+  bio: string | null;
+  defaultAnonymous: boolean;
+  notificationsEnabled: boolean;
+  createdAt: string;
 }

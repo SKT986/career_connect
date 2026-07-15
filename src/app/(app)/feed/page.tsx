@@ -1,4 +1,5 @@
 import { getFeedPosts } from "@/services/postsService";
+import { getViewerPreferences } from "@/services/profileService";
 import { PostComposer } from "@/components/feed/post-composer";
 import { CategoryFilter } from "@/components/feed/category-filter";
 import { SearchBar } from "@/components/feed/search-bar";
@@ -12,7 +13,10 @@ export default async function FeedPage({
 }) {
   const params = await searchParams;
   const category = (params.category as PostCategory | undefined) ?? "all";
-  const posts = await getFeedPosts({ category, search: params.q });
+  const [posts, { defaultAnonymous }] = await Promise.all([
+    getFeedPosts({ category, search: params.q }),
+    getViewerPreferences(),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
@@ -21,7 +25,7 @@ export default async function FeedPage({
           <h1 className="text-2xl font-semibold tracking-tight">Community</h1>
           <p className="text-sm text-muted-foreground">A safe space to ask, share, and support each other.</p>
         </div>
-        <PostComposer />
+        <PostComposer defaultAnonymous={defaultAnonymous} />
       </div>
 
       <SearchBar />

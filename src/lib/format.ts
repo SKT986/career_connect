@@ -10,6 +10,10 @@ export function formatDateTime(iso: string) {
   return format(new Date(iso), "MMM d, h:mm a");
 }
 
+export function formatDate(iso: string) {
+  return format(new Date(iso), "MMM d, yyyy");
+}
+
 export function categoryLabel(category: PostCategory) {
   return POST_CATEGORIES.find((c) => c.value === category)?.label ?? category;
 }
