@@ -44,6 +44,11 @@ shipped versus still open.
   (`database/migrations/0006_company_matching.sql`) — verified live end-to-end with two real accounts
 - Full app shell (sidebar/topbar nav, dark mode, high contrast, large text, language selector)
 - Full 18-table normalized schema with RLS on every table, migrated and live
+- Real whole-app EN / 日本語 / やさしい日本語 UI translation via `next-intl` (`src/i18n/request.ts`,
+  `messages/*.json`) — previously the language selector only affected the AI Assistant's reply
+  language and the `<html lang>` attribute; every page now renders in the selected language via a
+  cookie-backed locale resolved server-side, with no English flash on load
+  (`src/hooks/use-accessibility.ts`, `src/app/layout.tsx`)
 
 Every route from the original placeholder list now has real feature logic behind it.
 
