@@ -52,6 +52,13 @@ shipped versus still open.
 
 Every route from the original placeholder list now has real feature logic behind it.
 
+## Pending (open PR, not yet merged)
+- AI Assistant voice mode: mic input for speech-to-text and a "read aloud" button for text-to-speech
+  on chat replies, reusing the `useSpeechRecognition` hook already shipped for Mock Interview
+  (`src/hooks/use-speech-recognition.ts`, now parameterized with a BCP-47 language tag so it can
+  target EN/JA/Easy-JA — Mock Interview's own calls are unchanged and still default to `en-US`).
+  See branch `feature/ai-assistant-voice-mode`; not yet tested with real microphone hardware.
+
 Mentor promotion and verification are handled from `/admin` (see
 `database/migrations/0003_admin_mentor_verification.sql` for the RLS policy that unblocked
 admin writes to `mentor_profiles`). A mentor who isn't yet verified can still set up their
