@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,37 +14,36 @@ import { signUpAction, type AuthActionState } from "@/services/authService";
 const initialState: AuthActionState = {};
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   const [state, formAction] = useActionState(signUpAction, initialState);
 
   return (
     <Card className="rounded-3xl shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Create your account</CardTitle>
-        <CardDescription>
-          Anonymous by default. Verified by your university email. Judged by no one.
-        </CardDescription>
+        <CardTitle className="text-2xl">{t("register.title")}</CardTitle>
+        <CardDescription>{t("register.subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <OAuthButtons />
         <div className="flex items-center gap-3">
           <Separator className="flex-1" />
-          <span className="text-xs text-muted-foreground">or with email</span>
+          <span className="text-xs text-muted-foreground">{t("login.orWithEmail")}</span>
           <Separator className="flex-1" />
         </div>
 
         <form action={formAction} className="space-y-4" noValidate>
           <div className="space-y-2">
-            <Label htmlFor="displayName">Display name</Label>
-            <Input id="displayName" name="displayName" required placeholder="Only mentors ever see this" />
+            <Label htmlFor="displayName">{t("register.displayName")}</Label>
+            <Input id="displayName" name="displayName" required placeholder={t("register.displayNamePlaceholder")} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">University email</Label>
+            <Label htmlFor="email">{t("universityEmail")}</Label>
             <Input id="email" name="email" type="email" autoComplete="email" required placeholder="you@university.ac.jp" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} />
-            <p className="text-xs text-muted-foreground">At least 8 characters.</p>
+            <p className="text-xs text-muted-foreground">{t("register.passwordHint")}</p>
           </div>
 
           {state.error && (
@@ -52,13 +52,13 @@ export default function RegisterPage() {
             </p>
           )}
 
-          <SubmitButton className="w-full rounded-full">Create account</SubmitButton>
+          <SubmitButton className="w-full rounded-full">{t("register.createAccount")}</SubmitButton>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
+          {t("register.alreadyHaveAccount")}{" "}
           <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-            Sign in
+            {t("register.signIn")}
           </Link>
         </p>
       </CardContent>

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode, createElement } from "react";
+import { useRouter } from "next/navigation";
 
 export type AppLanguage = "en" | "ja" | "ja-easy";
 
@@ -16,32 +17,40 @@ interface AccessibilityContextValue extends AccessibilityState {
   setLanguage: (lang: AppLanguage) => void;
 }
 
-const DEFAULT_STATE: AccessibilityState = {
+const DEFAULT_STATE: Omit<AccessibilityState, "language"> = {
   fontScale: 1,
   highContrast: false,
-  language: "en",
 };
 
 const STORAGE_KEY = "cc-accessibility";
+const LOCALE_COOKIE = "NEXT_LOCALE";
 
 const AccessibilityContext = createContext<AccessibilityContextValue | null>(null);
 
-function readStoredState(): AccessibilityState {
+function readStoredState(): Omit<AccessibilityState, "language"> {
   if (typeof window === "undefined") return DEFAULT_STATE;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_STATE;
-    return { ...DEFAULT_STATE, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return { fontScale: parsed.fontScale ?? DEFAULT_STATE.fontScale, highContrast: parsed.highContrast ?? DEFAULT_STATE.highContrast };
   } catch {
     return DEFAULT_STATE;
   }
 }
 
-export function AccessibilityProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AccessibilityState>(DEFAULT_STATE);
+export function AccessibilityProvider({
+  children,
+  initialLanguage,
+}: {
+  children: ReactNode;
+  initialLanguage: AppLanguage;
+}) {
+  const router = useRouter();
+  const [state, setState] = useState<AccessibilityState>({ ...DEFAULT_STATE, language: initialLanguage });
 
   useEffect(() => {
-    setState(readStoredState());
+    setState((s) => ({ ...s, ...readStoredState() }));
   }, []);
 
   useEffect(() => {
@@ -53,7 +62,10 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       root.removeAttribute("data-contrast");
     }
     root.lang = state.language === "ja-easy" ? "ja" : state.language;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ fontScale: state.fontScale, highContrast: state.highContrast })
+    );
   }, [state]);
 
   const value = useMemo<AccessibilityContextValue>(
@@ -61,9 +73,13 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       ...state,
       setFontScale: (fontScale) => setState((s) => ({ ...s, fontScale })),
       setHighContrast: (highContrast) => setState((s) => ({ ...s, highContrast })),
-      setLanguage: (language) => setState((s) => ({ ...s, language })),
+      setLanguage: (language) => {
+        document.cookie = `${LOCALE_COOKIE}=${language}; path=/; max-age=31536000; SameSite=Lax`;
+        setState((s) => ({ ...s, language }));
+        router.refresh();
+      },
     }),
-    [state]
+    [state, router]
   );
 
   return createElement(AccessibilityContext.Provider, { value }, children);

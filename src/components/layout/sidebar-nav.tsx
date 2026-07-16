@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/lib/nav";
 import { Heart } from "lucide-react";
@@ -14,9 +15,10 @@ export function SidebarNav({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
-    <nav aria-label="Main navigation" className="flex h-full flex-col gap-1 p-3">
+    <nav aria-label={t("mainNavigation")} className="flex h-full flex-col gap-1 p-3">
       <Link
         href="/feed"
         className="mb-4 flex items-center gap-2 rounded-xl px-3 py-2 text-lg font-semibold tracking-tight"
@@ -46,7 +48,7 @@ export function SidebarNav({
             )}
           >
             <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
-            {item.label}
+            {t(item.labelKey)}
           </Link>
         );
       })}

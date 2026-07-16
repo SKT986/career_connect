@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Keyboard, Mic } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { InterviewDifficulty, InterviewMode } from "@/types/database.types";
 
-const DIFFICULTIES: { value: InterviewDifficulty; label: string; description: string }[] = [
-  { value: "easy", label: "Easy", description: "Warm-up, broadly applicable questions" },
-  { value: "medium", label: "Medium", description: "Standard behavioral & situational" },
-  { value: "hard", label: "Hard", description: "Challenging, multi-part questions" },
+const DIFFICULTIES: { value: InterviewDifficulty; labelKey: string; descriptionKey: string }[] = [
+  { value: "easy", labelKey: "difficultyEasy", descriptionKey: "difficultyEasyDescription" },
+  { value: "medium", labelKey: "difficultyMedium", descriptionKey: "difficultyMediumDescription" },
+  { value: "hard", labelKey: "difficultyHard", descriptionKey: "difficultyHardDescription" },
 ];
 
 export function SetupPanel({
@@ -24,20 +25,19 @@ export function SetupPanel({
   error: string | null;
   speechSupported: boolean;
 }) {
+  const t = useTranslations("mockInterview");
   const [difficulty, setDifficulty] = useState<InterviewDifficulty>("medium");
   const [mode, setMode] = useState<InterviewMode>("text");
 
   return (
     <Card className="mx-auto max-w-xl rounded-3xl">
       <CardHeader>
-        <CardTitle>Start a mock interview</CardTitle>
-        <CardDescription>
-          5 questions, scored instantly with specific feedback. Nothing here is shared with anyone.
-        </CardDescription>
+        <CardTitle>{t("startInterview")}</CardTitle>
+        <CardDescription>{t("startInterviewDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <p className="text-sm font-medium">Difficulty</p>
+          <p className="text-sm font-medium">{t("difficulty")}</p>
           <div className="grid grid-cols-3 gap-2">
             {DIFFICULTIES.map((d) => (
               <button
@@ -50,15 +50,15 @@ export function SetupPanel({
                   difficulty === d.value ? "border-primary bg-accent" : "border-border bg-card hover:bg-accent/60"
                 )}
               >
-                <p className="text-sm font-medium">{d.label}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{d.description}</p>
+                <p className="text-sm font-medium">{t(d.labelKey)}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{t(d.descriptionKey)}</p>
               </button>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Mode</p>
+          <p className="text-sm font-medium">{t("mode")}</p>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -70,7 +70,7 @@ export function SetupPanel({
               )}
             >
               <Keyboard className="h-4 w-4 text-primary" aria-hidden="true" />
-              <span className="text-sm font-medium">Text</span>
+              <span className="text-sm font-medium">{t("modeText")}</span>
             </button>
             <button
               type="button"
@@ -82,14 +82,11 @@ export function SetupPanel({
               )}
             >
               <Mic className="h-4 w-4 text-primary" aria-hidden="true" />
-              <span className="text-sm font-medium">Voice</span>
+              <span className="text-sm font-medium">{t("modeVoice")}</span>
             </button>
           </div>
           {mode === "voice" && !speechSupported && (
-            <p className="text-xs text-muted-foreground">
-              Voice input isn&apos;t supported in this browser — questions will still be read aloud, and you can type
-              your answers.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("voiceNotSupported")}</p>
           )}
         </div>
 
@@ -101,7 +98,7 @@ export function SetupPanel({
 
         <Button className="w-full rounded-full" onClick={() => onStart(difficulty, mode)} disabled={isStarting}>
           {isStarting && <Loader2 className="h-4 w-4 animate-spin" />}
-          Start interview
+          {t("startInterviewButton")}
         </Button>
       </CardContent>
     </Card>

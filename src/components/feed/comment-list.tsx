@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";
@@ -5,8 +6,10 @@ import { relativeTime } from "@/lib/format";
 import type { FeedComment } from "@/types/domain";
 
 export function CommentList({ comments }: { comments: FeedComment[] }) {
+  const t = useTranslations("feed");
+
   if (comments.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted-foreground">No replies yet. Be the first to respond.</p>;
+    return <p className="py-6 text-center text-sm text-muted-foreground">{t("noRepliesYet")}</p>;
   }
 
   return (
@@ -24,7 +27,7 @@ export function CommentList({ comments }: { comments: FeedComment[] }) {
               {comment.isMentor && (
                 <Badge className="gap-1 rounded-full font-normal">
                   <ShieldCheck className="h-3 w-3" aria-hidden="true" />
-                  Mentor
+                  {t("mentor")}
                 </Badge>
               )}
               <p className="text-xs text-muted-foreground">{relativeTime(comment.createdAt)}</p>

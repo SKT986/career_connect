@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -18,6 +19,7 @@ export function CommentComposer({
   allowIdentityReveal?: boolean;
   defaultAnonymous?: boolean;
 }) {
+  const t = useTranslations("feed");
   const action = createCommentAction.bind(null, postId);
   const [state, formAction] = useActionState(action, initialState);
   const [isAnonymous, setIsAnonymous] = useState(defaultAnonymous);
@@ -29,13 +31,13 @@ export function CommentComposer({
         required
         rows={3}
         maxLength={1000}
-        placeholder="Add a supportive reply..."
-        aria-label="Write a comment"
+        placeholder={t("commentPlaceholder")}
+        aria-label={t("writeComment")}
       />
       {allowIdentityReveal && (
         <div className="flex items-center justify-between rounded-xl border border-border px-3 py-2">
           <Label htmlFor="comment-isAnonymous" className="cursor-pointer text-sm font-normal text-muted-foreground">
-            Reply anonymously
+            {t("replyAnonymously")}
           </Label>
           <input type="hidden" name="isAnonymous" value={String(isAnonymous)} />
           <Switch id="comment-isAnonymous" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
@@ -47,7 +49,7 @@ export function CommentComposer({
         </p>
       )}
       <div className="flex justify-end">
-        <SubmitButton className="rounded-full">Reply</SubmitButton>
+        <SubmitButton className="rounded-full">{t("reply")}</SubmitButton>
       </div>
     </form>
   );

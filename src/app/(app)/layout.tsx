@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
 import { Topbar } from "@/components/layout/topbar";
@@ -12,9 +13,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (!user) redirect("/login");
 
-  const [{ data: profile }, unreadCount] = await Promise.all([
+  const [{ data: profile }, unreadCount, t] = await Promise.all([
     supabase.from("profiles").select("display_name, avatar_url, role").eq("id", user.id).single(),
     getUnreadNotificationCount(user.id),
+    getTranslations("common"),
   ]);
 
   return (
@@ -25,7 +27,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar
           userId={user.id}
-          displayName={profile?.display_name ?? "You"}
+          displayName={profile?.display_name ?? t("you")}
           avatarUrl={profile?.avatar_url ?? null}
           role={profile?.role ?? "student"}
           initialUnreadCount={unreadCount}

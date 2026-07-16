@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Users, FileText, MessageSquare, ShieldCheck, UserPlus, TrendingUp } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { KpiCard } from "@/components/shared/kpi-card";
@@ -35,7 +36,7 @@ export default async function AdminPage({
 
   const { q } = await searchParams;
 
-  const [overview, dailyActivity, categoryBreakdown, pendingMentors, promotableStudents, companies] =
+  const [overview, dailyActivity, categoryBreakdown, pendingMentors, promotableStudents, companies, t] =
     await Promise.all([
       getAdminOverview(),
       getDailyActivity(),
@@ -43,41 +44,40 @@ export default async function AdminPage({
       getPendingMentorVerifications(),
       searchPromotableStudents(q ?? ""),
       getAllCompanies(),
+      getTranslations("admin"),
     ]);
 
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Admin Analytics</h1>
-        <p className="text-sm text-muted-foreground">
-          Community health, activity trends, and mentor verification — all anonymous at the app layer.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <KpiCard icon={Users} label="Total users" value={overview.totalUsers} sublabel={`+${overview.newUsersLast7Days} in last 7 days`} />
-        <KpiCard icon={FileText} label="Posts" value={overview.totalPosts} />
-        <KpiCard icon={MessageSquare} label="Comments" value={overview.totalComments} />
-        <KpiCard icon={ShieldCheck} label="Verified mentors" value={overview.verifiedMentors} />
-        <KpiCard icon={UserPlus} label="Pending mentor verification" value={overview.pendingMentorVerifications} />
-        <KpiCard icon={TrendingUp} label="New users (7d)" value={overview.newUsersLast7Days} />
+        <KpiCard icon={Users} label={t("totalUsers")} value={overview.totalUsers} sublabel={t("newUsersLast7Days", { count: overview.newUsersLast7Days })} />
+        <KpiCard icon={FileText} label={t("posts")} value={overview.totalPosts} />
+        <KpiCard icon={MessageSquare} label={t("comments")} value={overview.totalComments} />
+        <KpiCard icon={ShieldCheck} label={t("verifiedMentors")} value={overview.verifiedMentors} />
+        <KpiCard icon={UserPlus} label={t("pendingMentorVerification")} value={overview.pendingMentorVerifications} />
+        <KpiCard icon={TrendingUp} label={t("newUsers7d")} value={overview.newUsersLast7Days} />
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
         <Card className="rounded-3xl">
           <CardContent className="space-y-3 p-5">
-            <h2 className="text-sm font-semibold text-muted-foreground">Daily active users (14 days)</h2>
-            <ActivityLineChart data={dailyActivity} series={[{ key: "activeUsers", label: "Active users", color: "var(--chart-1)" }]} />
+            <h2 className="text-sm font-semibold text-muted-foreground">{t("dailyActiveUsers")}</h2>
+            <ActivityLineChart data={dailyActivity} series={[{ key: "activeUsers", label: t("activeUsers"), color: "var(--chart-1)" }]} />
           </CardContent>
         </Card>
         <Card className="rounded-3xl">
           <CardContent className="space-y-3 p-5">
-            <h2 className="text-sm font-semibold text-muted-foreground">Post &amp; comment volume (14 days)</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground">{t("postCommentVolume")}</h2>
             <ActivityLineChart
               data={dailyActivity}
               series={[
-                { key: "posts", label: "Posts", color: "var(--chart-2)" },
-                { key: "comments", label: "Comments", color: "var(--chart-3)" },
+                { key: "posts", label: t("posts"), color: "var(--chart-2)" },
+                { key: "comments", label: t("comments"), color: "var(--chart-3)" },
               ]}
             />
           </CardContent>
@@ -85,11 +85,11 @@ export default async function AdminPage({
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">Popular topics</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("popularTopics")}</h2>
         <Card className="rounded-3xl">
           <CardContent className="p-5">
             {categoryBreakdown.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">No posts yet.</p>
+              <p className="py-8 text-center text-sm text-muted-foreground">{t("noPostsYet")}</p>
             ) : (
               <CategoryBreakdownChart data={categoryBreakdown} />
             )}
@@ -98,18 +98,18 @@ export default async function AdminPage({
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">Mentor verification queue</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("mentorVerificationQueue")}</h2>
         <MentorVerificationPanel pending={pendingMentors} />
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">Promote a student to mentor</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("promoteStudent")}</h2>
         <StudentSearchBar />
         {q?.trim() && <PromoteStudentList students={promotableStudents} />}
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">Companies</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("companies")}</h2>
         <CreateCompanyForm />
         {companies.length > 0 && (
           <ul className="flex flex-col gap-2">
@@ -121,7 +121,7 @@ export default async function AdminPage({
                       <p className="truncate text-sm font-medium">{c.name}</p>
                       {c.website && <p className="truncate text-xs text-muted-foreground">{c.website}</p>}
                     </div>
-                    <span className="shrink-0 text-xs text-muted-foreground">Joined {formatDate(c.createdAt)}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{t("joined", { date: formatDate(c.createdAt) })}</span>
                   </CardContent>
                 </Card>
               </li>

@@ -14,6 +14,7 @@ export function formatDate(iso: string) {
   return format(new Date(iso), "MMM d, yyyy");
 }
 
-export function categoryLabel(category: PostCategory) {
-  return POST_CATEGORIES.find((c) => c.value === category)?.label ?? category;
+export function categoryLabel(category: PostCategory, t: (key: string) => string) {
+  const labelKey = POST_CATEGORIES.find((c) => c.value === category)?.labelKey ?? "other";
+  return t(labelKey);
 }

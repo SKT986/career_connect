@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { getFeedPosts } from "@/services/postsService";
 import { getViewerPreferences } from "@/services/profileService";
 import { PostComposer } from "@/components/feed/post-composer";
@@ -13,17 +14,18 @@ export default async function FeedPage({
 }) {
   const params = await searchParams;
   const category = (params.category as PostCategory | undefined) ?? "all";
-  const [posts, { defaultAnonymous }] = await Promise.all([
+  const [posts, { defaultAnonymous }, t] = await Promise.all([
     getFeedPosts({ category, search: params.q }),
     getViewerPreferences(),
+    getTranslations("feed"),
   ]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Community</h1>
-          <p className="text-sm text-muted-foreground">A safe space to ask, share, and support each other.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
         <PostComposer defaultAnonymous={defaultAnonymous} />
       </div>

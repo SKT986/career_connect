@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sparkles } from "lucide-react";
@@ -11,6 +12,7 @@ export function MessageBubble({
   content: string;
   isStreaming?: boolean;
 }) {
+  const t = useTranslations("aiAssistant");
   const isAssistant = role === "assistant";
 
   return (
@@ -21,7 +23,7 @@ export function MessageBubble({
             <Sparkles className="h-4 w-4" />
           </AvatarFallback>
         ) : (
-          <AvatarFallback className="bg-secondary text-secondary-foreground">You</AvatarFallback>
+          <AvatarFallback className="bg-secondary text-secondary-foreground">{t("you")}</AvatarFallback>
         )}
       </Avatar>
       <div

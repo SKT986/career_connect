@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,34 +12,33 @@ import { createCompanyAction, type CompanyActionState } from "@/services/compani
 const initialState: CompanyActionState = {};
 
 export function CompanySetupForm() {
+  const t = useTranslations("companies");
   const [state, formAction] = useActionState(createCompanyAction, initialState);
 
   return (
     <Card className="mx-auto max-w-xl rounded-3xl">
       <CardHeader>
-        <CardTitle>Set up your company</CardTitle>
-        <CardDescription>
-          This is what students see on job listings. Once saved, you can start posting roles.
-        </CardDescription>
+        <CardTitle>{t("setUpCompany")}</CardTitle>
+        <CardDescription>{t("setUpCompanyDescription")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Company name</Label>
+            <Label htmlFor="name">{t("companyName")}</Label>
             <Input id="name" name="name" required maxLength={120} placeholder="Acme Inc." />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("description")}</Label>
             <Textarea
               id="description"
               name="description"
               rows={4}
               maxLength={1000}
-              placeholder="What you do, and what you look for in candidates."
+              placeholder={t("companyDescriptionPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="website">Website</Label>
+            <Label htmlFor="website">{t("website")}</Label>
             <Input id="website" name="website" type="url" placeholder="https://acme.com" />
           </div>
           {state.error && (
@@ -46,7 +46,7 @@ export function CompanySetupForm() {
               {state.error}
             </p>
           )}
-          <SubmitButton className="rounded-full">Save company</SubmitButton>
+          <SubmitButton className="rounded-full">{t("saveCompany")}</SubmitButton>
         </form>
       </CardContent>
     </Card>

@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, ImagePlus, X, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,6 +38,8 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const tCategories = useTranslations("postCategories");
+  const t = useTranslations("feed");
 
   useEffect(() => {
     if (state.success) {
@@ -67,32 +70,30 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2 rounded-full">
-          <Plus className="h-4 w-4" /> New post
+          <Plus className="h-4 w-4" /> {t("newPost")}
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-3xl sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Ask the community</DialogTitle>
-          <DialogDescription>
-            Your post is anonymous by default. Only your alias is ever shown.
-          </DialogDescription>
+          <DialogTitle>{t("askTheCommunity")}</DialogTitle>
+          <DialogDescription>{t("anonymousByDefault")}</DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="content">What&apos;s on your mind?</Label>
+            <Label htmlFor="content">{t("whatsOnYourMind")}</Label>
             <Textarea
               id="content"
               name="content"
               required
               rows={5}
               maxLength={4000}
-              placeholder="Ask a question, share a struggle, or start a conversation..."
+              placeholder={t("postPlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">{t("category")}</Label>
             <input type="hidden" name="category" value={category} />
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger id="category" className="w-full rounded-xl">
@@ -101,7 +102,7 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
               <SelectContent>
                 {POST_CATEGORIES.map((c) => (
                   <SelectItem key={c.value} value={c.value}>
-                    {c.label}
+                    {tCategories(c.labelKey)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -110,7 +111,7 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
 
           <div className="flex items-center justify-between rounded-xl border border-border px-3 py-2.5">
             <Label htmlFor="isAnonymous" className="cursor-pointer">
-              Post anonymously
+              {t("postAnonymously")}
             </Label>
             <input type="hidden" name="isAnonymous" value={String(isAnonymous)} />
             <Switch id="isAnonymous" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
@@ -128,7 +129,7 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
                   size="icon"
                   className="absolute right-2 top-2 h-7 w-7 rounded-full"
                   onClick={() => setImageUrl(null)}
-                  aria-label="Remove image"
+                  aria-label={t("removeImage")}
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>
@@ -142,7 +143,7 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
                 onClick={() => fileInputRef.current?.click()}
               >
                 {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-                Add image
+                {t("addImage")}
               </Button>
             )}
             <input
@@ -160,7 +161,7 @@ export function PostComposer({ defaultAnonymous = true }: { defaultAnonymous?: b
             </p>
           )}
 
-          <SubmitButton className="w-full rounded-full">Post</SubmitButton>
+          <SubmitButton className="w-full rounded-full">{t("post")}</SubmitButton>
         </form>
       </DialogContent>
     </Dialog>

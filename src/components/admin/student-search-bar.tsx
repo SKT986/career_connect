@@ -2,10 +2,12 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export function StudentSearchBar() {
+  const t = useTranslations("admin");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,8 +31,8 @@ export function StudentSearchBar() {
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Search students by name or email..."
-        aria-label="Search students to promote to mentor"
+        placeholder={t("searchStudentsPlaceholder")}
+        aria-label={t("searchStudentsAriaLabel")}
         className="rounded-full pl-9"
       />
     </div>

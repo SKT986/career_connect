@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { ShieldCheck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,20 +12,21 @@ import { verifyMentorAction } from "@/services/adminActions";
 import type { PendingMentorProfile } from "@/types/domain";
 
 export function MentorVerificationPanel({ pending }: { pending: PendingMentorProfile[] }) {
+  const t = useTranslations("admin");
   const [isPending, startTransition] = useTransition();
 
   function handleVerify(profileId: string, displayName: string) {
     startTransition(async () => {
       const result = await verifyMentorAction(profileId);
       if (result.error) toast.error(result.error);
-      else toast.success(`${displayName} is now a verified mentor.`);
+      else toast.success(t("nowVerifiedMentor", { name: displayName }));
     });
   }
 
   if (pending.length === 0) {
     return (
       <p className="rounded-3xl border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
-        No mentors waiting on verification.
+        {t("noMentorsWaiting")}
       </p>
     );
   }
@@ -43,7 +45,7 @@ export function MentorVerificationPanel({ pending }: { pending: PendingMentorPro
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{mentor.displayName}</p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {mentor.universityEmail ?? "No email on file"} · Requested {relativeTime(mentor.createdAt)}
+                  {mentor.universityEmail ?? t("noEmailOnFile")} · {t("requested", { time: relativeTime(mentor.createdAt) })}
                 </p>
                 {mentor.headline && (
                   <p className="mt-1 truncate text-xs text-muted-foreground/80">{mentor.headline}</p>
@@ -56,7 +58,7 @@ export function MentorVerificationPanel({ pending }: { pending: PendingMentorPro
                 onClick={() => handleVerify(mentor.profileId, mentor.displayName)}
               >
                 <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                Verify
+                {t("verify")}
               </Button>
             </CardContent>
           </Card>

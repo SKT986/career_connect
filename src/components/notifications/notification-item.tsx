@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { MessageCircle, ShieldCheck, Mic, Briefcase, Info, type LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -10,12 +11,12 @@ import { markNotificationReadAction } from "@/services/notificationsActions";
 import type { NotificationItem as NotificationItemType } from "@/types/domain";
 import type { NotificationType } from "@/types/database.types";
 
-const NOTIFICATION_META: Record<NotificationType, { icon: LucideIcon; label: string }> = {
-  reply: { icon: MessageCircle, label: "New reply" },
-  mentor_comment: { icon: ShieldCheck, label: "Mentor replied" },
-  interview_completed: { icon: Mic, label: "Interview completed" },
-  company_invitation: { icon: Briefcase, label: "Company invitation" },
-  system: { icon: Info, label: "Notice" },
+const NOTIFICATION_META: Record<NotificationType, { icon: LucideIcon; labelKey: string }> = {
+  reply: { icon: MessageCircle, labelKey: "newReply" },
+  mentor_comment: { icon: ShieldCheck, labelKey: "mentorReplied" },
+  interview_completed: { icon: Mic, labelKey: "interviewCompleted" },
+  company_invitation: { icon: Briefcase, labelKey: "companyInvitation" },
+  system: { icon: Info, labelKey: "notice" },
 };
 
 function stringField(payload: Record<string, unknown>, key: string): string | null {
@@ -24,6 +25,7 @@ function stringField(payload: Record<string, unknown>, key: string): string | nu
 }
 
 export function NotificationItem({ item }: { item: NotificationItemType }) {
+  const t = useTranslations("notifications");
   const [isPending, startTransition] = useTransition();
   const meta = NOTIFICATION_META[item.type];
   const excerpt = stringField(item.payload, "excerpt");
@@ -52,13 +54,13 @@ export function NotificationItem({ item }: { item: NotificationItemType }) {
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium">
-          {meta.label}
+          {t(meta.labelKey)}
           {authorLabel && <span className="font-normal text-muted-foreground"> · {authorLabel}</span>}
         </p>
         {excerpt && <p className="mt-0.5 truncate text-sm text-muted-foreground">{excerpt}</p>}
         <p className="mt-1 text-xs text-muted-foreground/80">{relativeTime(item.createdAt)}</p>
       </div>
-      {isUnread && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" aria-label="Unread" />}
+      {isUnread && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" aria-label={t("unread")} />}
     </CardContent>
   );
 

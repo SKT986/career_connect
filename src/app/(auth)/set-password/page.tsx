@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ import { setPasswordAndVerifyAction, type AuthActionState } from "@/services/aut
 const initialState: AuthActionState = {};
 
 export default function SetPasswordPage() {
+  const t = useTranslations("auth");
   const [status, setStatus] = useState<"checking" | "ready" | "invalid">("checking");
   const [state, formAction] = useActionState(setPasswordAndVerifyAction, initialState);
 
@@ -45,7 +47,7 @@ export default function SetPasswordPage() {
       <Card className="rounded-3xl shadow-lg">
         <CardContent className="flex flex-col items-center gap-3 py-12">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden="true" />
-          <p className="text-sm text-muted-foreground">Confirming your link...</p>
+          <p className="text-sm text-muted-foreground">{t("setPassword.confirmingLink")}</p>
         </CardContent>
       </Card>
     );
@@ -55,12 +57,12 @@ export default function SetPasswordPage() {
     return (
       <Card className="rounded-3xl shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Link expired</CardTitle>
-          <CardDescription>This link is no longer valid. Request a new one and try again.</CardDescription>
+          <CardTitle className="text-2xl">{t("setPassword.linkExpired")}</CardTitle>
+          <CardDescription>{t("setPassword.linkExpiredDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="text-center">
           <Link href="/forgot-password" className="text-sm font-medium text-primary underline-offset-4 hover:underline">
-            Request a new link
+            {t("setPassword.requestNewLink")}
           </Link>
         </CardContent>
       </Card>
@@ -70,17 +72,17 @@ export default function SetPasswordPage() {
   return (
     <Card className="rounded-3xl shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Set your password</CardTitle>
-        <CardDescription>Choose a password to finish setting up your account.</CardDescription>
+        <CardTitle className="text-2xl">{t("setPassword.title")}</CardTitle>
+        <CardDescription>{t("setPassword.subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <form action={formAction} className="space-y-4" noValidate>
           <div className="space-y-2">
-            <Label htmlFor="newPassword">New password</Label>
+            <Label htmlFor="newPassword">{t("setPassword.newPassword")}</Label>
             <Input id="newPassword" name="newPassword" type="password" required minLength={8} autoComplete="new-password" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Label htmlFor="confirmPassword">{t("setPassword.confirmPassword")}</Label>
             <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} autoComplete="new-password" />
           </div>
 
@@ -90,7 +92,7 @@ export default function SetPasswordPage() {
             </p>
           )}
 
-          <SubmitButton className="w-full rounded-full">Continue</SubmitButton>
+          <SubmitButton className="w-full rounded-full">{t("setPassword.continue")}</SubmitButton>
         </form>
       </CardContent>
     </Card>

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { Menu, Moon, Sun, ALargeSmall, Contrast, LogOut, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,6 +44,8 @@ export function Topbar({
   const { fontScale, setFontScale, highContrast, setHighContrast } = useAccessibility();
   const router = useRouter();
   const unreadCount = useUnreadNotificationCount(userId, initialUnreadCount);
+  const t = useTranslations("topbar");
+  const tNav = useTranslations("nav");
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -56,13 +59,13 @@ export function Topbar({
       <div className="flex items-center gap-2 lg:hidden">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Open navigation menu">
+            <Button variant="ghost" size="icon" aria-label={tNav("openMenu")}>
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 p-0">
             <SheetHeader className="sr-only">
-              <SheetTitle>Navigation</SheetTitle>
+              <SheetTitle>{tNav("navigationTitle")}</SheetTitle>
             </SheetHeader>
             <SidebarNav role={role} />
           </SheetContent>
@@ -78,7 +81,7 @@ export function Topbar({
               variant="ghost"
               size="icon"
               className="relative"
-              aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
+              aria-label={unreadCount > 0 ? t("notificationsUnread", { count: unreadCount }) : t("notifications")}
               onClick={() => router.push("/notifications")}
             >
               <Bell className="h-5 w-5" />
@@ -89,7 +92,7 @@ export function Topbar({
               )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Notifications</TooltipContent>
+          <TooltipContent>{t("notifications")}</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -98,13 +101,13 @@ export function Topbar({
               variant="ghost"
               size="icon"
               aria-pressed={fontScale > 1}
-              aria-label="Toggle large text"
+              aria-label={t("toggleLargeText")}
               onClick={() => setFontScale(fontScale > 1 ? 1 : 1.25)}
             >
               <ALargeSmall className="h-5 w-5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Large text</TooltipContent>
+          <TooltipContent>{t("largeText")}</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -113,13 +116,13 @@ export function Topbar({
               variant="ghost"
               size="icon"
               aria-pressed={highContrast}
-              aria-label="Toggle high contrast"
+              aria-label={t("toggleHighContrast")}
               onClick={() => setHighContrast(!highContrast)}
             >
               <Contrast className="h-5 w-5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>High contrast</TooltipContent>
+          <TooltipContent>{t("highContrast")}</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -127,14 +130,14 @@ export function Topbar({
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Toggle dark mode"
+              aria-label={t("toggleDarkMode")}
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               <Sun className="h-5 w-5 dark:hidden" />
               <Moon className="hidden h-5 w-5 dark:block" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Dark mode</TooltipContent>
+          <TooltipContent>{t("darkMode")}</TooltipContent>
         </Tooltip>
 
         <DropdownMenu>
@@ -149,11 +152,11 @@ export function Topbar({
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/settings")}>Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>{t("profile")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/settings")}>{t("settings")}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-              <LogOut className="h-4 w-4" /> Sign out
+              <LogOut className="h-4 w-4" /> {t("signOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

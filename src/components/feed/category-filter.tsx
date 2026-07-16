@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { POST_CATEGORIES } from "@/lib/nav";
 
@@ -9,6 +10,8 @@ export function CategoryFilter() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const active = searchParams.get("category") ?? "all";
+  const t = useTranslations("feed");
+  const tCategories = useTranslations("postCategories");
 
   function setCategory(value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -18,7 +21,7 @@ export function CategoryFilter() {
   }
 
   return (
-    <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Filter by category">
+    <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label={t("filterByCategory")}>
       <button
         role="tab"
         aria-selected={active === "all"}
@@ -30,7 +33,7 @@ export function CategoryFilter() {
             : "border-border bg-card text-muted-foreground hover:bg-accent"
         )}
       >
-        All
+        {t("all")}
       </button>
       {POST_CATEGORIES.map((c) => (
         <button
@@ -45,7 +48,7 @@ export function CategoryFilter() {
               : "border-border bg-card text-muted-foreground hover:bg-accent"
           )}
         >
-          {c.label}
+          {tCategories(c.labelKey)}
         </button>
       ))}
     </div>

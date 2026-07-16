@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ export function ScoreCard({
   isLastQuestion: boolean;
   onNext: () => void;
 }) {
+  const t = useTranslations("mockInterview");
   return (
     <Card className="mx-auto max-w-xl rounded-3xl">
       <CardContent className="space-y-5 p-6">
@@ -41,7 +43,7 @@ export function ScoreCard({
         {result.strengths.length > 0 && (
           <div className="space-y-1.5">
             <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-              <ThumbsUp className="h-3.5 w-3.5" /> Strengths
+              <ThumbsUp className="h-3.5 w-3.5" /> {t("strengths")}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {result.strengths.map((s) => (
@@ -56,7 +58,7 @@ export function ScoreCard({
         {result.improvements.length > 0 && (
           <div className="space-y-1.5">
             <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5" /> To improve
+              <TrendingUp className="h-3.5 w-3.5" /> {t("toImprove")}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {result.improvements.map((s) => (
@@ -71,11 +73,11 @@ export function ScoreCard({
         <Button className="w-full gap-2 rounded-full" onClick={onNext}>
           {isLastQuestion ? (
             <>
-              <PartyPopper className="h-4 w-4" /> See results
+              <PartyPopper className="h-4 w-4" /> {t("seeResults")}
             </>
           ) : (
             <>
-              Next question <ArrowRight className="h-4 w-4" />
+              {t("nextQuestion")} <ArrowRight className="h-4 w-4" />
             </>
           )}
         </Button>

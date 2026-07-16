@@ -2,10 +2,12 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export function SearchBar() {
+  const t = useTranslations("feed");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -31,8 +33,8 @@ export function SearchBar() {
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Search posts..."
-        aria-label="Search posts"
+        placeholder={t("searchPlaceholder")}
+        aria-label={t("searchPlaceholder")}
         className="rounded-full pl-9"
       />
     </div>

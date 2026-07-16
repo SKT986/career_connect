@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart, MessageCircle, Bookmark } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { toggleLikeAction, toggleBookmarkAction } from "@/services/postsActions"
 import type { FeedPost } from "@/types/domain";
 
 export function PostCard({ post, href }: { post: FeedPost; href?: string }) {
+  const t = useTranslations("feed");
   const [isPending, startTransition] = useTransition();
   const [optimistic, setOptimistic] = useOptimistic(
     { liked: post.likedByViewer, likeCount: post.likeCount, bookmarked: post.bookmarkedByViewer },
@@ -90,7 +92,7 @@ export function PostCard({ post, href }: { post: FeedPost; href?: string }) {
             onClick={handleLike}
             disabled={isPending}
             aria-pressed={optimistic.liked}
-            aria-label={optimistic.liked ? "Unlike post" : "Like post"}
+            aria-label={optimistic.liked ? t("unlikePost") : t("likePost")}
           >
             <motion.span whileTap={{ scale: 1.3 }} className="flex">
               <Heart className={cn("h-4 w-4", optimistic.liked && "fill-current")} />
@@ -108,7 +110,7 @@ export function PostCard({ post, href }: { post: FeedPost; href?: string }) {
             onClick={handleBookmark}
             disabled={isPending}
             aria-pressed={optimistic.bookmarked}
-            aria-label={optimistic.bookmarked ? "Remove bookmark" : "Bookmark post"}
+            aria-label={optimistic.bookmarked ? t("removeBookmark") : t("bookmarkPost")}
           >
             <Bookmark className={cn("h-4 w-4", optimistic.bookmarked && "fill-current")} />
           </Button>

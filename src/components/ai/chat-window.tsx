@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Send, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,6 +20,7 @@ interface ChatMessage {
 }
 
 export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }) {
+  const t = useTranslations("aiAssistant");
   const { language } = useAccessibility();
   const [functionType, setFunctionType] = useState<AiFunctionType>("career_advice");
   const [messages, setMessages] = useState<ChatMessage[]>(
@@ -59,7 +61,7 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
 
       if (!res.ok || !res.body) {
         const text = await res.text();
-        throw new Error(text || "The AI assistant is unavailable right now.");
+        throw new Error(text || t("unavailableError"));
       }
 
       const reader = res.body.getReader();
@@ -80,12 +82,10 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
       // Anthropic quota/credit error) surfaces here as a stream that ends
       // with no content rather than a non-200 response.
       if (!fullText.trim()) {
-        throw new Error(
-          "The AI assistant couldn't generate a response. This usually means the Anthropic API key is missing billing/credits — please try again in a moment."
-        );
+        throw new Error(t("noResponseError"));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : t("genericError"));
       setMessages((prev) => prev.filter((m) => m.id !== assistantId));
     } finally {
       setIsStreaming(false);
@@ -103,7 +103,7 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
           <div aria-live="polite" className="flex flex-col gap-4">
             {messages.length === 0 && (
               <div className="rounded-2xl bg-muted px-4 py-3 text-sm text-muted-foreground">
-                {activeFn.description}. Ask away — everything here is private to you.
+                {t(activeFn.descriptionKey)}. {t("privacyNote")}
               </div>
             )}
             {messages.map((m, i) => (
@@ -134,14 +134,14 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
                 handleSubmit(e);
               }
             }}
-            placeholder="Type your message..."
-            aria-label="Message the AI assistant"
+            placeholder={t("typeMessagePlaceholder")}
+            aria-label={t("messageAiAssistant")}
             rows={1}
             className="max-h-40 min-h-10 flex-1 resize-none rounded-2xl"
           />
           <Button type="submit" size="icon" className="shrink-0 rounded-full" disabled={isStreaming || !input.trim()}>
             {isStreaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            <span className="sr-only">Send</span>
+            <span className="sr-only">{t("send")}</span>
           </Button>
         </form>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ export function QuestionPanel({
   isScoring: boolean;
   onSubmit: (answer: string) => void;
 }) {
+  const t = useTranslations("mockInterview");
   const [answer, setAnswer] = useState("");
   const { isSupported, isListening, transcript, start, stop } = useSpeechRecognition();
 
@@ -43,14 +45,14 @@ export function QuestionPanel({
       <CardContent className="space-y-5 p-6">
         <div className="flex items-center justify-between">
           <Badge variant="secondary" className="rounded-full font-normal">
-            Question {index + 1} of {total}
+            {t("questionProgress", { current: index + 1, total })}
           </Badge>
           <Button
             type="button"
             variant="ghost"
             size="icon"
             onClick={() => speak(question)}
-            aria-label="Read question aloud"
+            aria-label={t("readQuestionAloud")}
           >
             <Volume2 className="h-4 w-4" />
           </Button>
@@ -64,8 +66,8 @@ export function QuestionPanel({
             onChange={(e) => setAnswer(e.target.value)}
             rows={6}
             maxLength={4000}
-            placeholder="Type your answer, or use STAR: Situation, Task, Action, Result..."
-            aria-label="Your answer"
+            placeholder={t("answerPlaceholder")}
+            aria-label={t("yourAnswer")}
           />
           {mode === "voice" && isSupported && (
             <Button
@@ -75,7 +77,7 @@ export function QuestionPanel({
               onClick={() => (isListening ? stop() : start())}
             >
               {isListening ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              {isListening ? "Stop recording" : "Record answer"}
+              {isListening ? t("stopRecording") : t("recordAnswer")}
             </Button>
           )}
         </div>
@@ -86,7 +88,7 @@ export function QuestionPanel({
           onClick={() => onSubmit(answer.trim())}
         >
           {isScoring ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-          Submit answer
+          {t("submitAnswer")}
         </Button>
       </CardContent>
     </Card>

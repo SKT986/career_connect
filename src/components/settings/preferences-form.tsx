@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -12,13 +13,15 @@ import type { ProfileSummary } from "@/types/domain";
 const initialState: SettingsActionState = {};
 
 export function PreferencesForm({ profile }: { profile: ProfileSummary }) {
+  const t = useTranslations("settings");
   const [state, formAction] = useActionState(updatePreferencesAction, initialState);
   const [defaultAnonymous, setDefaultAnonymous] = useState(profile.defaultAnonymous);
   const [notificationsEnabled, setNotificationsEnabled] = useState(profile.notificationsEnabled);
 
   useEffect(() => {
-    if (state.success) toast.success("Preferences saved.");
+    if (state.success) toast.success(t("preferencesSaved"));
     if (state.error) toast.error(state.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return (
@@ -31,11 +34,9 @@ export function PreferencesForm({ profile }: { profile: ProfileSummary }) {
           <div className="flex items-center justify-between gap-4 rounded-2xl border border-border px-4 py-3">
             <div>
               <Label htmlFor="default-anonymous" className="cursor-pointer">
-                Post anonymously by default
+                {t("postAnonymouslyDefault")}
               </Label>
-              <p className="text-xs text-muted-foreground">
-                New posts and mentor replies start with anonymous mode on. You can still change it per post.
-              </p>
+              <p className="text-xs text-muted-foreground">{t("postAnonymouslyDefaultHint")}</p>
             </div>
             <Switch id="default-anonymous" checked={defaultAnonymous} onCheckedChange={setDefaultAnonymous} />
           </div>
@@ -43,11 +44,9 @@ export function PreferencesForm({ profile }: { profile: ProfileSummary }) {
           <div className="flex items-center justify-between gap-4 rounded-2xl border border-border px-4 py-3">
             <div>
               <Label htmlFor="notifications-enabled" className="cursor-pointer">
-                Notify me about replies &amp; mentor comments
+                {t("notifyMe")}
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Turn off to stop new in-app notifications for activity on your posts.
-              </p>
+              <p className="text-xs text-muted-foreground">{t("notifyMeHint")}</p>
             </div>
             <Switch
               id="notifications-enabled"
@@ -56,7 +55,7 @@ export function PreferencesForm({ profile }: { profile: ProfileSummary }) {
             />
           </div>
 
-          <SubmitButton className="rounded-full">Save preferences</SubmitButton>
+          <SubmitButton className="rounded-full">{t("savePreferences")}</SubmitButton>
         </form>
       </CardContent>
     </Card>

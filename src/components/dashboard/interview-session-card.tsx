@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Keyboard, Mic } from "lucide-react";
@@ -11,11 +12,12 @@ function scoreColor(score: number) {
   return "text-amber-600 dark:text-amber-400";
 }
 
-function capitalize(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
+const DIFFICULTY_KEYS = { easy: "difficultyEasy", medium: "difficultyMedium", hard: "difficultyHard" } as const;
+const MODE_KEYS = { text: "modeText", voice: "modeVoice" } as const;
 
 export function InterviewSessionCard({ session }: { session: InterviewSessionSummary }) {
+  const t = useTranslations("mockInterview");
+  const tDashboard = useTranslations("dashboard");
   return (
     <Card className="rounded-3xl">
       <CardContent className="flex items-center gap-4 p-4">
@@ -29,15 +31,15 @@ export function InterviewSessionCard({ session }: { session: InterviewSessionSum
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <Badge variant="secondary" className="rounded-full font-normal">
-              {capitalize(session.difficulty)}
+              {t(DIFFICULTY_KEYS[session.difficulty])}
             </Badge>
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
               {session.mode === "voice" ? <Mic className="h-3 w-3" /> : <Keyboard className="h-3 w-3" />}
-              {capitalize(session.mode)}
+              {t(MODE_KEYS[session.mode])}
             </span>
           </div>
           <p className="mt-1 truncate text-xs text-muted-foreground">
-            {session.questions.length} questions · {relativeTime(session.createdAt)}
+            {tDashboard("questionsCount", { count: session.questions.length })} · {relativeTime(session.createdAt)}
           </p>
         </div>
       </CardContent>

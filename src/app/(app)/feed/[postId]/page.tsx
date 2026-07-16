@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { getPostById, getCommentsForPost } from "@/services/postsService";
 import { getCurrentUserRole } from "@/services/mentorService";
 import { getViewerPreferences } from "@/services/profileService";
@@ -18,10 +19,11 @@ export default async function PostDetailPage({
   const post = await getPostById(postId);
   if (!post) notFound();
 
-  const [comments, role, { defaultAnonymous }] = await Promise.all([
+  const [comments, role, { defaultAnonymous }, t] = await Promise.all([
     getCommentsForPost(postId),
     getCurrentUserRole(),
     getViewerPreferences(),
+    getTranslations("feed"),
   ]);
 
   return (
@@ -30,7 +32,7 @@ export default async function PostDetailPage({
         href="/feed"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" /> Back to community
+        <ArrowLeft className="h-4 w-4" /> {t("backToCommunity")}
       </Link>
 
       <PostCard post={post} />
@@ -39,7 +41,7 @@ export default async function PostDetailPage({
 
       <div className="space-y-4">
         <h2 className="text-sm font-semibold text-muted-foreground">
-          {comments.length} {comments.length === 1 ? "reply" : "replies"}
+          {t("repliesCount", { count: comments.length })}
         </h2>
         <CommentComposer
           postId={postId}

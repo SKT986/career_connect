@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +22,7 @@ import { createJobAction, type CompanyActionState } from "@/services/companiesAc
 const initialState: CompanyActionState = {};
 
 export function JobComposer() {
+  const t = useTranslations("companies");
   const [open, setOpen] = useState(false);
   const [state, formAction] = useActionState(createJobAction, initialState);
   const router = useRouter();
@@ -36,27 +38,27 @@ export function JobComposer() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2 rounded-full">
-          <Plus className="h-4 w-4" /> Post a role
+          <Plus className="h-4 w-4" /> {t("postARole")}
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-3xl sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Post a role</DialogTitle>
-          <DialogDescription>Students will see this in the community job board.</DialogDescription>
+          <DialogTitle>{t("postARole")}</DialogTitle>
+          <DialogDescription>{t("postARoleDescription")}</DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" name="title" required maxLength={120} placeholder="Software Engineer, New Grad" />
+            <Label htmlFor="title">{t("titleLabel")}</Label>
+            <Input id="title" name="title" required maxLength={120} placeholder={t("jobTitlePlaceholder")} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="location">Location (optional)</Label>
-            <Input id="location" name="location" maxLength={120} placeholder="Remote, or a city" />
+            <Label htmlFor="location">{t("locationOptional")}</Label>
+            <Input id="location" name="location" maxLength={120} placeholder={t("locationPlaceholder")} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
-            <Textarea id="description" name="description" rows={4} maxLength={1000} placeholder="Role, requirements, what makes your team a good fit." />
+            <Label htmlFor="description">{t("descriptionOptional")}</Label>
+            <Textarea id="description" name="description" rows={4} maxLength={1000} placeholder={t("jobDescriptionPlaceholder")} />
           </div>
 
           {state.error && (
@@ -65,7 +67,7 @@ export function JobComposer() {
             </p>
           )}
 
-          <SubmitButton className="w-full rounded-full">Post role</SubmitButton>
+          <SubmitButton className="w-full rounded-full">{t("postRole")}</SubmitButton>
         </form>
       </DialogContent>
     </Dialog>

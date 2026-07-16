@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { AI_FUNCTIONS } from "@/lib/ai-functions";
 import type { AiFunctionType } from "@/types/database.types";
@@ -11,10 +12,11 @@ export function FunctionPicker({
   value: AiFunctionType;
   onChange: (value: AiFunctionType) => void;
 }) {
+  const t = useTranslations("aiAssistant");
   return (
     <div
       role="radiogroup"
-      aria-label="AI assistant function"
+      aria-label={t("functionPickerLabel")}
       className="grid grid-cols-2 gap-2 sm:grid-cols-4"
     >
       {AI_FUNCTIONS.map((fn) => (
@@ -32,7 +34,7 @@ export function FunctionPicker({
           )}
         >
           <fn.icon className="h-4 w-4 text-primary" aria-hidden="true" />
-          <span className="text-xs font-medium">{fn.label}</span>
+          <span className="text-xs font-medium">{t(fn.labelKey)}</span>
         </button>
       ))}
     </div>

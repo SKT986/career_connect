@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getMyProfile } from "@/services/profileService";
 import { PreferencesForm } from "@/components/settings/preferences-form";
@@ -16,31 +17,29 @@ export default async function SettingsPage() {
   if (!profile) redirect("/login");
 
   const hasPasswordAuth = user.identities?.some((identity) => identity.provider === "email") ?? false;
+  const t = await getTranslations("settings");
 
   return (
     <div className="mx-auto max-w-xl space-y-10">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-        <p className="text-sm text-muted-foreground">
-          Account, privacy, and notification preferences. For dark mode, text size, and language, visit
-          Accessibility.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">Privacy &amp; notifications</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("privacyNotifications")}</h2>
         <PreferencesForm profile={profile} />
       </section>
 
       {hasPasswordAuth && (
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-muted-foreground">Password</h2>
+          <h2 className="text-sm font-semibold text-muted-foreground">{t("password")}</h2>
           <PasswordForm />
         </section>
       )}
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">Account</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("account")}</h2>
         <SignOutButton />
       </section>
     </div>

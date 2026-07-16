@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 export function SignOutButton() {
+  const t = useTranslations("settings");
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
@@ -21,7 +23,7 @@ export function SignOutButton() {
   return (
     <Button variant="outline" className="gap-2 rounded-full" onClick={handleSignOut} disabled={isSigningOut}>
       {isSigningOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
-      Sign out
+      {t("signOut")}
     </Button>
   );
 }

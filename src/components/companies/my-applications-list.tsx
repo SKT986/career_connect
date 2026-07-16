@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Check, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,19 +10,26 @@ import { Button } from "@/components/ui/button";
 import { relativeTime } from "@/lib/format";
 import { respondToRevealAction } from "@/services/companiesActions";
 import type { ApplicationSummary, MatchingRequestSummary } from "@/types/domain";
+import type { ApplicationStatus } from "@/types/database.types";
 
-function capitalize(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
+const STATUS_KEYS: Record<ApplicationStatus, string> = {
+  submitted: "statusSubmitted",
+  reviewing: "statusReviewing",
+  interview: "statusInterview",
+  offer: "statusOffer",
+  rejected: "statusRejected",
+  withdrawn: "statusWithdrawn",
+};
 
 function RevealRequestCard({ request }: { request: MatchingRequestSummary }) {
+  const t = useTranslations("companies");
   const [isPending, startTransition] = useTransition();
 
   function respond(accept: boolean) {
     startTransition(async () => {
       const result = await respondToRevealAction(request.companyId, accept);
       if (result.error) toast.error(result.error);
-      else toast.success(accept ? `Identity shared with ${request.companyName}.` : "Request declined.");
+      else toast.success(accept ? t("identityShared", { company: request.companyName }) : t("requestDeclined"));
     });
   }
 
@@ -29,17 +37,17 @@ function RevealRequestCard({ request }: { request: MatchingRequestSummary }) {
     <Card className="rounded-3xl border-primary/30 bg-accent/40">
       <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
         <div>
-          <p className="text-sm font-medium">{request.companyName} wants to see who you are</p>
-          <p className="text-xs text-muted-foreground">Requested {relativeTime(request.createdAt)}</p>
+          <p className="text-sm font-medium">{t("wantsToSeeWhoYouAre", { company: request.companyName })}</p>
+          <p className="text-xs text-muted-foreground">{t("requested", { time: relativeTime(request.createdAt) })}</p>
         </div>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" className="gap-1.5 rounded-full" disabled={isPending} onClick={() => respond(false)}>
             <X className="h-3.5 w-3.5" aria-hidden="true" />
-            Decline
+            {t("decline")}
           </Button>
           <Button size="sm" className="gap-1.5 rounded-full" disabled={isPending} onClick={() => respond(true)}>
             <Check className="h-3.5 w-3.5" aria-hidden="true" />
-            Accept
+            {t("accept")}
           </Button>
         </div>
       </CardContent>
@@ -54,6 +62,7 @@ export function MyApplicationsList({
   applications: ApplicationSummary[];
   matchingRequests: MatchingRequestSummary[];
 }) {
+  const t = useTranslations("companies");
   const pendingRequests = matchingRequests.filter((r) => r.status === "pending");
 
   return (
@@ -68,7 +77,7 @@ export function MyApplicationsList({
 
       {applications.length === 0 ? (
         <p className="rounded-3xl border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
-          Applications you submit will show up here.
+          {t("applicationsEmpty")}
         </p>
       ) : (
         <ul className="flex flex-col gap-2">
@@ -79,11 +88,11 @@ export function MyApplicationsList({
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{app.jobTitle}</p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {app.companyName} · Applied {relativeTime(app.createdAt)}
+                      {t("appliedAt", { company: app.companyName, time: relativeTime(app.createdAt) })}
                     </p>
                   </div>
                   <Badge variant="secondary" className="shrink-0 rounded-full font-normal">
-                    {capitalize(app.status)}
+                    {t(STATUS_KEYS[app.status])}
                   </Badge>
                 </CardContent>
               </Card>

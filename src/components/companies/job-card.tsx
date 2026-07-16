@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Check, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,13 +11,14 @@ import { applyToJobAction } from "@/services/companiesActions";
 import type { JobListing } from "@/types/domain";
 
 export function JobCard({ job }: { job: JobListing }) {
+  const t = useTranslations("companies");
   const [isPending, startTransition] = useTransition();
 
   function handleApply() {
     startTransition(async () => {
       const result = await applyToJobAction(job.id);
       if (result.error) toast.error(result.error);
-      else toast.success(`Applied to ${job.title} at ${job.companyName}.`);
+      else toast.success(t("appliedToast", { title: job.title, company: job.companyName }));
     });
   }
 
@@ -43,11 +45,11 @@ export function JobCard({ job }: { job: JobListing }) {
           {job.alreadyApplied ? (
             <span className="flex items-center gap-1 text-xs font-medium text-primary">
               <Check className="h-3.5 w-3.5" aria-hidden="true" />
-              Applied
+              {t("applied")}
             </span>
           ) : (
             <Button size="sm" className="rounded-full" disabled={isPending} onClick={handleApply}>
-              Apply
+              {t("apply")}
             </Button>
           )}
         </div>

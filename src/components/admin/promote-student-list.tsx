@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { UserPlus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,18 +11,19 @@ import { promoteToMentorAction } from "@/services/adminActions";
 import type { PromotableStudent } from "@/types/domain";
 
 export function PromoteStudentList({ students }: { students: PromotableStudent[] }) {
+  const t = useTranslations("admin");
   const [isPending, startTransition] = useTransition();
 
   function handlePromote(profileId: string, displayName: string) {
     startTransition(async () => {
       const result = await promoteToMentorAction(profileId);
       if (result.error) toast.error(result.error);
-      else toast.success(`${displayName} can now set up a mentor profile at /mentors.`);
+      else toast.success(t("canNowSetUpMentorProfile", { name: displayName }));
     });
   }
 
   if (students.length === 0) {
-    return <p className="text-sm text-muted-foreground">No students matched that search.</p>;
+    return <p className="text-sm text-muted-foreground">{t("noStudentsMatched")}</p>;
   }
 
   return (
@@ -38,7 +40,7 @@ export function PromoteStudentList({ students }: { students: PromotableStudent[]
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{student.displayName}</p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {student.universityEmail ?? "No email on file"}
+                  {student.universityEmail ?? t("noEmailOnFile")}
                 </p>
               </div>
               <Button
@@ -49,7 +51,7 @@ export function PromoteStudentList({ students }: { students: PromotableStudent[]
                 onClick={() => handlePromote(student.profileId, student.displayName)}
               >
                 <UserPlus className="h-3.5 w-3.5" aria-hidden="true" />
-                Promote to mentor
+                {t("promoteToMentor")}
               </Button>
             </CardContent>
           </Card>

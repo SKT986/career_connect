@@ -1,6 +1,7 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
 import { categoryLabel } from "@/lib/format";
 import type { CategoryBreakdownPoint } from "@/types/domain";
 
@@ -13,7 +14,8 @@ const CHART_COLORS = [
 ];
 
 export function CategoryBreakdownChart({ data }: { data: CategoryBreakdownPoint[] }) {
-  const chartData = data.map((d) => ({ label: categoryLabel(d.category), count: d.count }));
+  const t = useTranslations("postCategories");
+  const chartData = data.map((d) => ({ label: categoryLabel(d.category, t), count: d.count }));
   const height = Math.max(chartData.length * 36, 120);
 
   return (

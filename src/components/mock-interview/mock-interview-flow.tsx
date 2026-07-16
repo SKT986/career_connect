@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { SetupPanel } from "@/components/mock-interview/setup-panel";
 import { QuestionPanel } from "@/components/mock-interview/question-panel";
 import { ScoreCard } from "@/components/mock-interview/score-card";
@@ -12,6 +13,7 @@ import type { InterviewAnswerScore } from "@/types/domain";
 type Phase = "setup" | "question" | "scoring" | "answered" | "finished";
 
 export function MockInterviewFlow() {
+  const tCommon = useTranslations("common");
   const [phase, setPhase] = useState<Phase>("setup");
   const [difficulty, setDifficulty] = useState<InterviewDifficulty>("medium");
   const [mode, setMode] = useState<InterviewMode>("text");
@@ -34,7 +36,7 @@ export function MockInterviewFlow() {
         body: JSON.stringify({ difficulty: nextDifficulty, mode: nextMode }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Something went wrong.");
+      if (!res.ok) throw new Error(json.error ?? tCommon("genericError"));
 
       setDifficulty(nextDifficulty);
       setMode(nextMode);
@@ -45,7 +47,7 @@ export function MockInterviewFlow() {
       setCurrentResult(null);
       setPhase("question");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : tCommon("genericError"));
     } finally {
       setIsStarting(false);
     }
@@ -68,7 +70,7 @@ export function MockInterviewFlow() {
         }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Something went wrong.");
+      if (!res.ok) throw new Error(json.error ?? tCommon("genericError"));
 
       setCurrentResult(json);
       setResults((prev) => {
@@ -78,7 +80,7 @@ export function MockInterviewFlow() {
       });
       setPhase("answered");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : tCommon("genericError"));
       setPhase("question");
     }
   }

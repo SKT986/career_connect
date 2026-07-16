@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
@@ -13,15 +14,16 @@ export function ResultsSummary({
   results: InterviewAnswerScore[];
   onRestart: () => void;
 }) {
+  const t = useTranslations("mockInterview");
   const average = Math.round(results.reduce((sum, r) => sum + r.score, 0) / results.length);
 
   return (
     <div className="mx-auto max-w-xl space-y-5">
       <Card className="rounded-3xl bg-accent/60">
         <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-          <p className="text-sm font-medium text-muted-foreground">Average score</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("averageScore")}</p>
           <p className="text-5xl font-semibold tabular-nums">{average}</p>
-          <p className="text-sm text-muted-foreground">across {results.length} questions</p>
+          <p className="text-sm text-muted-foreground">{t("acrossQuestions", { count: results.length })}</p>
         </CardContent>
       </Card>
 
@@ -54,7 +56,7 @@ export function ResultsSummary({
       </div>
 
       <Button variant="outline" className="w-full gap-2 rounded-full" onClick={onRestart}>
-        <RotateCcw className="h-4 w-4" /> Start another interview
+        <RotateCcw className="h-4 w-4" /> {t("startAnotherInterview")}
       </Button>
     </div>
   );

@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Camera, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,10 +15,19 @@ import { SubmitButton } from "@/components/shared/submit-button";
 import { updateProfileAction, type ProfileActionState } from "@/services/profileActions";
 import { formatDate } from "@/lib/format";
 import type { ProfileSummary } from "@/types/domain";
+import type { UserRole } from "@/types/database.types";
 
 const initialState: ProfileActionState = {};
 
+const ROLE_KEYS: Record<UserRole, string> = {
+  student: "roleStudent",
+  mentor: "roleMentor",
+  company: "roleCompany",
+  admin: "roleAdmin",
+};
+
 export function ProfileForm({ profile }: { profile: ProfileSummary }) {
+  const t = useTranslations("profile");
   const router = useRouter();
   const [state, formAction] = useActionState(updateProfileAction, initialState);
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl);
@@ -25,9 +35,10 @@ export function ProfileForm({ profile }: { profile: ProfileSummary }) {
 
   useEffect(() => {
     if (state.success) {
-      toast.success("Profile updated.");
+      toast.success(t("profileUpdated"));
       router.refresh();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, router]);
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -41,7 +52,7 @@ export function ProfileForm({ profile }: { profile: ProfileSummary }) {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const json = await res.json();
       if (res.ok) setAvatarUrl(json.url);
-      else toast.error(json.error ?? "Avatar upload failed.");
+      else toast.error(json.error ?? t("avatarUploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -70,7 +81,7 @@ export function ProfileForm({ profile }: { profile: ProfileSummary }) {
                 ) : (
                   <Camera className="h-3.5 w-3.5" aria-hidden="true" />
                 )}
-                <span className="sr-only">Change avatar</span>
+                <span className="sr-only">{t("changeAvatar")}</span>
               </label>
               <input
                 id="avatar-upload"
@@ -82,39 +93,37 @@ export function ProfileForm({ profile }: { profile: ProfileSummary }) {
               />
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary" className="rounded-full font-normal capitalize">
-                {profile.role}
+              <Badge variant="secondary" className="rounded-full font-normal">
+                {t(ROLE_KEYS[profile.role])}
               </Badge>
               <span className="text-xs text-muted-foreground">
-                Member since {formatDate(profile.createdAt)}
+                {t("memberSince", { date: formatDate(profile.createdAt) })}
               </span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="displayName">Display name</Label>
+            <Label htmlFor="displayName">{t("displayName")}</Label>
             <Input id="displayName" name="displayName" required maxLength={60} defaultValue={profile.displayName} />
-            <p className="text-xs text-muted-foreground">
-              Shown on non-anonymous posts and replies. Anonymous posts always use a generated alias instead.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("displayNameHint")}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
+            <Label htmlFor="bio">{t("bio")}</Label>
             <Textarea
               id="bio"
               name="bio"
               rows={4}
               maxLength={500}
               defaultValue={profile.bio ?? ""}
-              placeholder="A short intro — shared when you post or comment non-anonymously."
+              placeholder={t("bioPlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>University email</Label>
-            <Input value={profile.universityEmail ?? "Not set"} disabled />
-            <p className="text-xs text-muted-foreground">Contact support to change the email tied to your account.</p>
+            <Label>{t("universityEmail")}</Label>
+            <Input value={profile.universityEmail ?? t("notSet")} disabled />
+            <p className="text-xs text-muted-foreground">{t("universityEmailHint")}</p>
           </div>
 
           {state.error && (
@@ -123,7 +132,7 @@ export function ProfileForm({ profile }: { profile: ProfileSummary }) {
             </p>
           )}
 
-          <SubmitButton className="rounded-full">Save changes</SubmitButton>
+          <SubmitButton className="rounded-full">{t("saveChanges")}</SubmitButton>
         </form>
       </CardContent>
     </Card>

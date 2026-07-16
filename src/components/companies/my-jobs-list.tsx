@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Eye } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,34 +12,35 @@ import { requestRevealAction } from "@/services/companiesActions";
 import type { ApplicantSummary, JobWithApplicants } from "@/types/domain";
 
 function RevealAction({ applicant }: { applicant: ApplicantSummary }) {
+  const t = useTranslations("companies");
   const [isPending, startTransition] = useTransition();
 
   function handleRequest() {
     startTransition(async () => {
       const result = await requestRevealAction(applicant.studentId);
       if (result.error) toast.error(result.error);
-      else toast.success("Reveal request sent.");
+      else toast.success(t("revealRequestSent"));
     });
   }
 
   if (applicant.identityRevealed) {
     return (
       <Badge variant="secondary" className="rounded-full font-normal">
-        Identity revealed
+        {t("identityRevealed")}
       </Badge>
     );
   }
   if (applicant.revealStatus === "pending") {
     return (
       <Badge variant="secondary" className="rounded-full font-normal">
-        Reveal requested
+        {t("revealRequested")}
       </Badge>
     );
   }
   if (applicant.revealStatus === "declined") {
     return (
       <Badge variant="secondary" className="rounded-full font-normal text-muted-foreground">
-        Declined
+        {t("declined")}
       </Badge>
     );
   }
@@ -46,16 +48,17 @@ function RevealAction({ applicant }: { applicant: ApplicantSummary }) {
   return (
     <Button size="sm" variant="outline" className="gap-1.5 rounded-full" disabled={isPending} onClick={handleRequest}>
       <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-      Request reveal
+      {t("requestReveal")}
     </Button>
   );
 }
 
 export function MyJobsList({ jobs }: { jobs: JobWithApplicants[] }) {
+  const t = useTranslations("companies");
   if (jobs.length === 0) {
     return (
       <p className="rounded-3xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-        Post your first role to start receiving applicants.
+        {t("postFirstRole")}
       </p>
     );
   }
@@ -69,12 +72,13 @@ export function MyJobsList({ jobs }: { jobs: JobWithApplicants[] }) {
               <div>
                 <p className="text-sm font-medium">{job.title}</p>
                 <p className="text-xs text-muted-foreground">
-                  {job.location ? `${job.location} · ` : ""}Posted {relativeTime(job.createdAt)}
+                  {job.location ? `${job.location} · ` : ""}
+                  {t("posted", { time: relativeTime(job.createdAt) })}
                 </p>
               </div>
 
               {job.applicants.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No applicants yet.</p>
+                <p className="text-sm text-muted-foreground">{t("noApplicantsYet")}</p>
               ) : (
                 <ul className="flex flex-col gap-2">
                   {job.applicants.map((applicant) => (
@@ -85,7 +89,7 @@ export function MyJobsList({ jobs }: { jobs: JobWithApplicants[] }) {
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{applicant.label}</p>
                         <p className="text-xs text-muted-foreground">
-                          Applied {relativeTime(applicant.appliedAt)}
+                          {t("appliedTime", { time: relativeTime(applicant.appliedAt) })}
                         </p>
                       </div>
                       <RevealAction applicant={applicant} />

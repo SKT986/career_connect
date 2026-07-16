@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { MailCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { requestPasswordResetAction, type AuthActionState } from "@/services/aut
 const initialState: AuthActionState = {};
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("auth");
   const [state, formAction] = useActionState(requestPasswordResetAction, initialState);
 
   if (state.success) {
@@ -21,10 +23,8 @@ export default function ForgotPasswordPage() {
           <span className="mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
             <MailCheck className="h-7 w-7" aria-hidden="true" />
           </span>
-          <CardTitle className="text-2xl">Check your inbox</CardTitle>
-          <CardDescription>
-            If an account exists for that email, we&apos;ve sent a link to reset your password.
-          </CardDescription>
+          <CardTitle className="text-2xl">{t("forgotPassword.checkInbox")}</CardTitle>
+          <CardDescription>{t("forgotPassword.checkInboxDescription")}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -33,13 +33,13 @@ export default function ForgotPasswordPage() {
   return (
     <Card className="rounded-3xl shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Forgot your password?</CardTitle>
-        <CardDescription>Enter your email and we&apos;ll send you a reset link.</CardDescription>
+        <CardTitle className="text-2xl">{t("forgotPassword.title")}</CardTitle>
+        <CardDescription>{t("forgotPassword.subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <form action={formAction} className="space-y-4" noValidate>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input id="email" name="email" type="email" autoComplete="email" required placeholder="you@university.ac.jp" />
           </div>
 
@@ -49,12 +49,12 @@ export default function ForgotPasswordPage() {
             </p>
           )}
 
-          <SubmitButton className="w-full rounded-full">Send reset link</SubmitButton>
+          <SubmitButton className="w-full rounded-full">{t("forgotPassword.sendResetLink")}</SubmitButton>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
           <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-            Back to sign in
+            {t("forgotPassword.backToSignIn")}
           </Link>
         </p>
       </CardContent>

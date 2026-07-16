@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +22,7 @@ import { createAmaSessionAction, type MentorActionState } from "@/services/mento
 const initialState: MentorActionState = {};
 
 export function HostAmaDialog() {
+  const t = useTranslations("mentors");
   const [open, setOpen] = useState(false);
   const [state, formAction] = useActionState(createAmaSessionAction, initialState);
   const router = useRouter();
@@ -36,27 +38,27 @@ export function HostAmaDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2 rounded-full">
-          <CalendarPlus className="h-4 w-4" /> Host an AMA
+          <CalendarPlus className="h-4 w-4" /> {t("hostAnAma")}
         </Button>
       </DialogTrigger>
       <DialogContent className="rounded-3xl sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Schedule an AMA session</DialogTitle>
-          <DialogDescription>Students will see this on the Mentor Community page.</DialogDescription>
+          <DialogTitle>{t("scheduleAmaSession")}</DialogTitle>
+          <DialogDescription>{t("scheduleAmaDescription")}</DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" name="title" required maxLength={120} placeholder="Ask me anything about breaking into UX" />
+            <Label htmlFor="title">{t("titleLabel")}</Label>
+            <Input id="title" name="title" required maxLength={120} placeholder={t("titlePlaceholder")} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="scheduledAt">Date and time</Label>
+            <Label htmlFor="scheduledAt">{t("dateAndTime")}</Label>
             <Input id="scheduledAt" name="scheduledAt" type="datetime-local" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
-            <Textarea id="description" name="description" rows={3} maxLength={1000} placeholder="What should students bring or expect?" />
+            <Label htmlFor="description">{t("descriptionOptional")}</Label>
+            <Textarea id="description" name="description" rows={3} maxLength={1000} placeholder={t("descriptionPlaceholder")} />
           </div>
 
           {state.error && (
@@ -65,7 +67,7 @@ export function HostAmaDialog() {
             </p>
           )}
 
-          <SubmitButton className="w-full rounded-full">Schedule AMA</SubmitButton>
+          <SubmitButton className="w-full rounded-full">{t("scheduleAma")}</SubmitButton>
         </form>
       </DialogContent>
     </Dialog>

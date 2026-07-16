@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -15,49 +16,21 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const AUDIENCES = [
-  "International students",
-  "Students with disabilities",
-  "LGBTQ+ students",
-  "Mental health & isolation",
-  "First-gen job seekers",
+const AUDIENCE_KEYS = [
+  "audienceInternational",
+  "audienceDisabilities",
+  "audienceLgbtq",
+  "audienceMentalHealth",
+  "audienceFirstGen",
 ];
 
 const FEATURES = [
-  {
-    icon: MessagesSquare,
-    title: "Anonymous community",
-    description:
-      "Ask the questions you'd never post under your real name. Category-tagged, searchable, and moderated for safety.",
-  },
-  {
-    icon: GraduationCap,
-    title: "Mentor support",
-    description: "Verified mentors reply to posts, host AMAs, and share stories from people who've been there.",
-  },
-  {
-    icon: Sparkles,
-    title: "AI career assistant",
-    description:
-      "Resume feedback, cover letters, STAR answers, and career advice in English or Japanese, day or night.",
-  },
-  {
-    icon: Mic,
-    title: "AI mock interviews",
-    description: "Practice by text or voice, choose your difficulty, and get scored with actionable feedback.",
-  },
-  {
-    icon: Accessibility,
-    title: "Accessibility first",
-    description:
-      "Dark mode, large text, high contrast, screen reader support, and multi-language — not an afterthought.",
-  },
-  {
-    icon: Building2,
-    title: "Consent-based matching",
-    description:
-      "Build an anonymous profile. Companies search skills and goals — never your identity, unless you choose to share it.",
-  },
+  { icon: MessagesSquare, titleKey: "featureCommunityTitle", descriptionKey: "featureCommunityDescription" },
+  { icon: GraduationCap, titleKey: "featureMentorTitle", descriptionKey: "featureMentorDescription" },
+  { icon: Sparkles, titleKey: "featureAiTitle", descriptionKey: "featureAiDescription" },
+  { icon: Mic, titleKey: "featureMockInterviewTitle", descriptionKey: "featureMockInterviewDescription" },
+  { icon: Accessibility, titleKey: "featureAccessibilityTitle", descriptionKey: "featureAccessibilityDescription" },
+  { icon: Building2, titleKey: "featureMatchingTitle", descriptionKey: "featureMatchingDescription" },
 ];
 
 function useMotionProps() {
@@ -71,6 +44,7 @@ function useMotionProps() {
 }
 
 export default function LandingPage() {
+  const t = useTranslations("marketing");
   const reveal = useMotionProps();
 
   return (
@@ -84,33 +58,29 @@ export default function LandingPage() {
         >
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
             <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-            Private by default. Always.
+            {t("privateByDefault")}
           </span>
           <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            A career journey where you don&apos;t have to explain yourself first.
+            {t("heroTitle")}
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-            Career Connect is a psychologically safe space for international, disabled, LGBTQ+, and
-            isolated students to ask career questions anonymously, get mentor support, practice with AI,
-            and meet companies who already understand.
-          </p>
+          <p className="mt-5 max-w-lg text-lg text-muted-foreground">{t("heroDescription")}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="rounded-full">
               <Link href="/register">
-                Get started free <ArrowRight className="h-4 w-4" />
+                {t("getStartedFree")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full">
-              <Link href="/login">Sign in</Link>
+              <Link href="/login">{t("signIn")}</Link>
             </Button>
           </div>
           <ul className="mt-8 flex flex-wrap gap-2">
-            {AUDIENCES.map((a) => (
+            {AUDIENCE_KEYS.map((key) => (
               <li
-                key={a}
+                key={key}
                 className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground"
               >
-                {a}
+                {t(key)}
               </li>
             ))}
           </ul>
@@ -127,17 +97,14 @@ export default function LandingPage() {
                 <span className="h-9 w-9 rounded-full bg-secondary" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium">Anon-4f8c2a</p>
-                  <p className="text-xs text-muted-foreground">2h ago · International Students</p>
+                  <p className="text-xs text-muted-foreground">{t("demoPostMeta")}</p>
                 </div>
               </div>
-              <p className="text-sm leading-relaxed">
-                Is it normal to feel behind because interviews here work so differently from back home?
-                I froze during a group discussion round and don&apos;t know how to prepare next time.
-              </p>
+              <p className="text-sm leading-relaxed">{t("demoPostContent")}</p>
               <div className="flex items-center gap-4 text-xs text-muted-foreground">
                 <span>♥ 38</span>
-                <span>💬 12 replies</span>
-                <span className="rounded-full bg-accent px-2 py-0.5 text-accent-foreground">Mentor replied</span>
+                <span>💬 {t("demoPostReplies")}</span>
+                <span className="rounded-full bg-accent px-2 py-0.5 text-accent-foreground">{t("mentorReplied")}</span>
               </div>
             </CardContent>
           </Card>
@@ -147,16 +114,14 @@ export default function LandingPage() {
       {/* Features */}
       <section className="py-16 sm:py-20">
         <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-semibold tracking-tight">Everything you need, none of the pressure</h2>
-          <p className="mt-3 text-muted-foreground">
-            Built around trust, privacy, and accessibility from the first line of code.
-          </p>
+          <h2 className="text-3xl font-semibold tracking-tight">{t("featuresTitle")}</h2>
+          <p className="mt-3 text-muted-foreground">{t("featuresSubtitle")}</p>
         </motion.div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature, i) => (
             <motion.div
-              key={feature.title}
+              key={feature.titleKey}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -167,8 +132,8 @@ export default function LandingPage() {
                   <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
                     <feature.icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <h3 className="font-semibold">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <h3 className="font-semibold">{t(feature.titleKey)}</h3>
+                  <p className="text-sm text-muted-foreground">{t(feature.descriptionKey)}</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -180,13 +145,11 @@ export default function LandingPage() {
       <motion.section {...reveal} className="py-16 sm:py-20">
         <Card className="rounded-3xl bg-primary text-primary-foreground">
           <CardContent className="flex flex-col items-center gap-4 p-10 text-center sm:p-14">
-            <h2 className="text-3xl font-semibold tracking-tight">You belong in this job market.</h2>
-            <p className="max-w-md text-primary-foreground/90">
-              Join a community that was built with you in mind, not as an edge case.
-            </p>
+            <h2 className="text-3xl font-semibold tracking-tight">{t("ctaTitle")}</h2>
+            <p className="max-w-md text-primary-foreground/90">{t("ctaDescription")}</p>
             <Button asChild size="lg" variant="secondary" className="rounded-full">
               <Link href="/register">
-                Create your free account <ArrowRight className="h-4 w-4" />
+                {t("createFreeAccount")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </CardContent>

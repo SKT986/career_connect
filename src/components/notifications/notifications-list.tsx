@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { CheckCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useRealtimeNotifications } from "@/hooks/use-realtime-notifications";
 import { markAllNotificationsReadAction } from "@/services/notificationsActions";
@@ -9,6 +10,7 @@ import { NotificationItem } from "@/components/notifications/notification-item";
 import type { NotificationItem as NotificationItemType } from "@/types/domain";
 
 export function NotificationsList({ userId, initial }: { userId: string; initial: NotificationItemType[] }) {
+  const t = useTranslations("notifications");
   const notifications = useRealtimeNotifications(userId, initial);
   const [isPending, startTransition] = useTransition();
   const hasUnread = notifications.some((n) => !n.readAt);
@@ -22,7 +24,7 @@ export function NotificationsList({ userId, initial }: { userId: string; initial
   if (notifications.length === 0) {
     return (
       <p className="rounded-3xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-        You&apos;re all caught up — new replies and mentor comments will show up here.
+        {t("caughtUp")}
       </p>
     );
   }
@@ -38,7 +40,7 @@ export function NotificationsList({ userId, initial }: { userId: string; initial
           onClick={handleMarkAllRead}
         >
           <CheckCheck className="h-3.5 w-3.5" aria-hidden="true" />
-          Mark all as read
+          {t("markAllRead")}
         </Button>
       </div>
       <ul className="flex flex-col gap-3">

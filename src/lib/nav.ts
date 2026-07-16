@@ -15,33 +15,33 @@ import {
 
 export interface NavItem {
   href: string;
-  label: string;
+  labelKey: string;
   icon: LucideIcon;
   adminOnly?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/feed", label: "Community", icon: MessagesSquare },
-  { href: "/ai-assistant", label: "AI Assistant", icon: Sparkles },
-  { href: "/mentors", label: "Mentors", icon: GraduationCap },
-  { href: "/mock-interview", label: "Mock Interview", icon: Mic },
-  { href: "/companies", label: "Companies", icon: Building2 },
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/notifications", label: "Notifications", icon: Bell },
-  { href: "/profile", label: "Profile", icon: User },
-  { href: "/settings", label: "Settings", icon: Settings },
-  { href: "/accessibility", label: "Accessibility", icon: Accessibility },
-  { href: "/admin", label: "Admin", icon: ShieldCheck, adminOnly: true },
+  { href: "/feed", labelKey: "community", icon: MessagesSquare },
+  { href: "/ai-assistant", labelKey: "aiAssistant", icon: Sparkles },
+  { href: "/mentors", labelKey: "mentors", icon: GraduationCap },
+  { href: "/mock-interview", labelKey: "mockInterview", icon: Mic },
+  { href: "/companies", labelKey: "companies", icon: Building2 },
+  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/notifications", labelKey: "notifications", icon: Bell },
+  { href: "/profile", labelKey: "profile", icon: User },
+  { href: "/settings", labelKey: "settings", icon: Settings },
+  { href: "/accessibility", labelKey: "accessibility", icon: Accessibility },
+  { href: "/admin", labelKey: "admin", icon: ShieldCheck, adminOnly: true },
 ];
 
 export const POST_CATEGORIES = [
-  { value: "job_hunting", label: "Job Hunting" },
-  { value: "interview", label: "Interview" },
-  { value: "resume", label: "Resume" },
-  { value: "mental_health", label: "Mental Health" },
-  { value: "disability_support", label: "Disability Support" },
-  { value: "international_students", label: "International Students" },
-  { value: "lgbtq", label: "LGBTQ+" },
-  { value: "workplace", label: "Workplace" },
-  { value: "other", label: "Other" },
+  { value: "job_hunting", labelKey: "jobHunting" },
+  { value: "interview", labelKey: "interview" },
+  { value: "resume", labelKey: "resume" },
+  { value: "mental_health", labelKey: "mentalHealth" },
+  { value: "disability_support", labelKey: "disabilitySupport" },
+  { value: "international_students", labelKey: "internationalStudents" },
+  { value: "lgbtq", labelKey: "lgbtq" },
+  { value: "workplace", labelKey: "workplace" },
+  { value: "other", labelKey: "other" },
 ] as const;

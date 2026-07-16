@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -5,6 +6,7 @@ import { ShieldCheck } from "lucide-react";
 import type { MentorProfileSummary } from "@/types/domain";
 
 export function MentorCard({ mentor }: { mentor: MentorProfileSummary }) {
+  const t = useTranslations("mentors");
   return (
     <Card className="h-full rounded-3xl">
       <CardContent className="flex flex-col gap-3 p-5">
@@ -18,7 +20,7 @@ export function MentorCard({ mentor }: { mentor: MentorProfileSummary }) {
             <p className="truncate text-sm font-medium">{mentor.displayName}</p>
             <span className="inline-flex items-center gap-1 text-xs text-primary">
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-              Verified mentor
+              {t("verifiedMentor")}
             </span>
           </div>
         </div>
