@@ -1,7 +1,12 @@
+"use client";
+
 import { useTranslations } from "next-intl";
+import { Volume2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAccessibility } from "@/hooks/use-accessibility";
+import { speak, speechLangFor } from "@/hooks/use-speech-recognition";
 
 export function MessageBubble({
   role,
@@ -13,6 +18,7 @@ export function MessageBubble({
   isStreaming?: boolean;
 }) {
   const t = useTranslations("aiAssistant");
+  const { language } = useAccessibility();
   const isAssistant = role === "assistant";
 
   return (
@@ -26,14 +32,28 @@ export function MessageBubble({
           <AvatarFallback className="bg-secondary text-secondary-foreground">{t("you")}</AvatarFallback>
         )}
       </Avatar>
-      <div
-        className={cn(
-          "max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-          isAssistant ? "bg-muted text-foreground" : "bg-primary text-primary-foreground"
+      <div className={cn("flex max-w-[80%] items-start gap-1", !isAssistant && "flex-row-reverse")}>
+        <div
+          className={cn(
+            "whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+            isAssistant ? "bg-muted text-foreground" : "bg-primary text-primary-foreground"
+          )}
+        >
+          {content}
+          {isStreaming && <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-current align-middle" />}
+        </div>
+        {isAssistant && !isStreaming && content && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="mt-1 h-7 w-7 shrink-0 rounded-full text-muted-foreground"
+            onClick={() => speak(content, speechLangFor(language))}
+          >
+            <Volume2 className="h-3.5 w-3.5" />
+            <span className="sr-only">{t("readAloud")}</span>
+          </Button>
         )}
-      >
-        {content}
-        {isStreaming && <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-current align-middle" />}
       </div>
     </div>
   );

@@ -158,6 +158,9 @@
     "typeMessagePlaceholder": "Type your message...",
     "messageAiAssistant": "Message the AI assistant",
     "send": "Send",
+    "startVoiceInput": "Start voice input",
+    "stopVoiceInput": "Stop voice input",
+    "readAloud": "Read message aloud",
     "pageTitle": "AI Career Assistant",
     "pageSubtitle": "Resume feedback, interview practice, and career advice — in English or Japanese, any time."
   },
@@ -357,7 +360,7 @@
     "keyboardScreenReaders": "Keyboard & screen readers",
     "keyboardNote": "Every interactive element in Career Connect is reachable by Tab and has a visible focus ring.",
     "skipLinkNote": "Use the \"Skip to main content\" link (appears on first Tab press) to jump past navigation.",
-    "voiceModeNote": "Mock Interview already supports voice mode. Text-to-speech and speech-to-text for the AI Assistant are coming soon."
+    "voiceModeNote": "The AI Assistant and Mock Interview both support voice mode — questions and replies can be read aloud, and spoken answers are transcribed in supported browsers."
   },
   "admin": {
     "title": "Admin Analytics",
