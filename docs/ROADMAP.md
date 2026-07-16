@@ -28,21 +28,24 @@ shipped versus still open.
   and an AI Assistant usage breakdown by function — all pulling from data the other shipped
   features already produce
 - Notification System (`/notifications`): real-time (Supabase Realtime) in-app notifications for
-  replies and mentor comments on your posts, topbar unread-count bell, mark-as-read / mark-all-read
-  (`database/migrations/0004_notifications_realtime.sql`)
+  replies, mentor comments, and company reveal requests, topbar unread-count bell, mark-as-read /
+  mark-all-read (`database/migrations/0004_notifications_realtime.sql` and
+  `0007_notifications_insert_policy.sql` — the latter fixes a real bug where the original RLS only
+  allowed a user to insert a notification for *themselves*, silently dropping every notification
+  since they're always created by someone else; caught during two-real-account Company Matching testing)
 - Profile (`/profile`): editable display name, bio, and avatar (`avatars` storage bucket)
 - Settings (`/settings`): "post anonymously by default" and notification opt-out preferences
   (wired into the post/comment composers and the notification triggers), password change, sign out
   (`database/migrations/0005_settings_preferences.sql`)
+- Company Matching (`/companies`): admin-provisioned company accounts (service-role invite), a job
+  board where students browse and apply anonymously, and consent-based identity reveal via
+  `matching_requests` (company requests → student accepts/declines → company sees real name only
+  on accept), tied into the notification system
+  (`database/migrations/0006_company_matching.sql`) — verified live end-to-end with two real accounts
 - Full app shell (sidebar/topbar nav, dark mode, high contrast, large text, language selector)
 - Full 18-table normalized schema with RLS on every table, migrated and live
 
-**Still a placeholder (real route + nav entry exists, feature logic built but not yet verified
-live end-to-end):**
-- Company Matching (`/companies`) — job board + anonymous applications + consent-based identity
-  reveal, admin-provisioned company accounts. Code is complete (`services/companiesService.ts` /
-  `companiesActions.ts`, `database/migrations/0006_company_matching.sql`) but blocked on live
-  verification by a Supabase auth-email rate limit on the test account; not yet confirmed working.
+Every route from the original placeholder list now has real feature logic behind it.
 
 Mentor promotion and verification are handled from `/admin` (see
 `database/migrations/0003_admin_mentor_verification.sql` for the RLS policy that unblocked

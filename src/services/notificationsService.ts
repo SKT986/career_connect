@@ -63,7 +63,7 @@ export async function createReplyNotification(params: {
   const authorLabel =
     params.isAnonymous || !commenter ? (commenter?.anonymous_alias ?? "Someone") : commenter.display_name;
 
-  await supabase.from("notifications").insert({
+  const { error } = await supabase.from("notifications").insert({
     user_id: params.postAuthorId,
     type: isMentorReply ? "mentor_comment" : "reply",
     payload: {
@@ -72,6 +72,7 @@ export async function createReplyNotification(params: {
       excerpt: params.commentExcerpt.slice(0, 140),
     },
   });
+  if (error) console.error("createReplyNotification insert failed:", error.message);
 }
 
 export async function createCompanyInvitationNotification(params: {
@@ -86,9 +87,10 @@ export async function createCompanyInvitationNotification(params: {
     .maybeSingle();
   if (recipient && !recipient.notifications_enabled) return;
 
-  await supabase.from("notifications").insert({
+  const { error } = await supabase.from("notifications").insert({
     user_id: params.studentId,
     type: "company_invitation",
     payload: { companyName: params.companyName },
   });
+  if (error) console.error("createCompanyInvitationNotification insert failed:", error.message);
 }
