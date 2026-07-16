@@ -26,9 +26,11 @@ function stringField(payload: Record<string, unknown>, key: string): string | nu
 export function NotificationItem({ item }: { item: NotificationItemType }) {
   const [isPending, startTransition] = useTransition();
   const meta = NOTIFICATION_META[item.type];
-  const authorLabel = stringField(item.payload, "authorLabel");
   const excerpt = stringField(item.payload, "excerpt");
   const postId = stringField(item.payload, "postId");
+  const companyName = stringField(item.payload, "companyName");
+  const authorLabel = stringField(item.payload, "authorLabel") ?? companyName;
+  const targetHref = postId ? `/feed/${postId}` : item.type === "company_invitation" ? "/companies" : null;
   const isUnread = !item.readAt;
 
   function handleOpen() {
@@ -62,9 +64,9 @@ export function NotificationItem({ item }: { item: NotificationItemType }) {
 
   return (
     <Card className={cn("rounded-3xl transition-opacity", isPending && "opacity-70")}>
-      {postId ? (
+      {targetHref ? (
         <Link
-          href={`/feed/${postId}`}
+          href={targetHref}
           onClick={handleOpen}
           className="block rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >

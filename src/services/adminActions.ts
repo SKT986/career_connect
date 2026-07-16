@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-interface AdminActionResult {
+export interface AdminActionResult {
   error?: string;
   success?: boolean;
 }
@@ -73,5 +74,40 @@ export async function revokeMentorVerificationAction(profileId: string): Promise
 
   revalidatePath("/admin");
   revalidatePath("/mentors");
+  return { success: true };
+}
+
+export async function createCompanyAccountAction(
+  _prev: AdminActionResult,
+  formData: FormData
+): Promise<AdminActionResult> {
+  const supabase = await createClient();
+  const check = await requireAdmin(supabase);
+  if ("error" in check) return { error: check.error };
+
+  const email = String(formData.get("email") ?? "").trim();
+  const displayName = String(formData.get("displayName") ?? "").trim();
+
+  if (!email) return { error: "Enter the company rep's email." };
+  if (!displayName) return { error: "Enter a contact name for the account." };
+
+  const adminClient = createAdminClient();
+  const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
+    data: { display_name: displayName },
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/set-password`,
+  });
+
+  if (inviteError || !invited.user) {
+    return { error: inviteError?.message ?? "Something went wrong creating that account." };
+  }
+
+  const { error: roleError } = await supabase
+    .from("profiles")
+    .update({ role: "company" })
+    .eq("id", invited.user.id);
+
+  if (roleError) return { error: "Account created, but something went wrong setting its role." };
+
+  revalidatePath("/admin");
   return { success: true };
 }

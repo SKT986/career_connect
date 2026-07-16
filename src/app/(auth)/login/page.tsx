@@ -35,7 +35,12 @@ export default function LoginPage() {
             <Input id="email" name="email" type="email" autoComplete="email" required placeholder="you@university.ac.jp" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Password</Label>
+              <Link href="/forgot-password" className="text-xs font-medium text-primary underline-offset-4 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <Input id="password" name="password" type="password" autoComplete="current-password" required />
           </div>
 

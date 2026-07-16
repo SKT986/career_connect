@@ -8,8 +8,11 @@ import { CategoryBreakdownChart } from "@/components/admin/category-breakdown-ch
 import { MentorVerificationPanel } from "@/components/admin/mentor-verification-panel";
 import { StudentSearchBar } from "@/components/admin/student-search-bar";
 import { PromoteStudentList } from "@/components/admin/promote-student-list";
+import { CreateCompanyForm } from "@/components/admin/create-company-form";
+import { formatDate } from "@/lib/format";
 import {
   getAdminOverview,
+  getAllCompanies,
   getCategoryBreakdown,
   getDailyActivity,
   getPendingMentorVerifications,
@@ -32,13 +35,15 @@ export default async function AdminPage({
 
   const { q } = await searchParams;
 
-  const [overview, dailyActivity, categoryBreakdown, pendingMentors, promotableStudents] = await Promise.all([
-    getAdminOverview(),
-    getDailyActivity(),
-    getCategoryBreakdown(),
-    getPendingMentorVerifications(),
-    searchPromotableStudents(q ?? ""),
-  ]);
+  const [overview, dailyActivity, categoryBreakdown, pendingMentors, promotableStudents, companies] =
+    await Promise.all([
+      getAdminOverview(),
+      getDailyActivity(),
+      getCategoryBreakdown(),
+      getPendingMentorVerifications(),
+      searchPromotableStudents(q ?? ""),
+      getAllCompanies(),
+    ]);
 
   return (
     <div className="mx-auto max-w-4xl space-y-10">
@@ -101,6 +106,28 @@ export default async function AdminPage({
         <h2 className="text-sm font-semibold text-muted-foreground">Promote a student to mentor</h2>
         <StudentSearchBar />
         {q?.trim() && <PromoteStudentList students={promotableStudents} />}
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold text-muted-foreground">Companies</h2>
+        <CreateCompanyForm />
+        {companies.length > 0 && (
+          <ul className="flex flex-col gap-2">
+            {companies.map((c) => (
+              <li key={c.id}>
+                <Card className="rounded-2xl">
+                  <CardContent className="flex items-center justify-between gap-3 p-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{c.name}</p>
+                      {c.website && <p className="truncate text-xs text-muted-foreground">{c.website}</p>}
+                    </div>
+                    <span className="shrink-0 text-xs text-muted-foreground">Joined {formatDate(c.createdAt)}</span>
+                  </CardContent>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );

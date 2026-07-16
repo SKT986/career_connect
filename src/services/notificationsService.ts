@@ -73,3 +73,22 @@ export async function createReplyNotification(params: {
     },
   });
 }
+
+export async function createCompanyInvitationNotification(params: {
+  studentId: string;
+  companyName: string;
+}): Promise<void> {
+  const supabase = await createClient();
+  const { data: recipient } = await supabase
+    .from("profiles")
+    .select("notifications_enabled")
+    .eq("id", params.studentId)
+    .maybeSingle();
+  if (recipient && !recipient.notifications_enabled) return;
+
+  await supabase.from("notifications").insert({
+    user_id: params.studentId,
+    type: "company_invitation",
+    payload: { companyName: params.companyName },
+  });
+}

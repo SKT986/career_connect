@@ -7,7 +7,9 @@ shipped versus still open.
 ## Status (current)
 
 **Shipped and verified against a live Supabase project, using Anthropic Claude for the AI Assistant (migrated from OpenAI):**
-- Landing, Register/Login (university email + Google/GitHub OAuth), email verification gate
+- Landing, Register/Login (university email + Google/GitHub OAuth), email verification gate,
+  self-service password reset (`/forgot-password` → `/set-password`, handles both admin-generated
+  invite links and user-initiated recovery links)
 - Anonymous Community Feed: posts, comments, likes, bookmarks, search, category filters, image upload
 - Post Detail page with threaded replies, including mentor-badged non-anonymous replies
 - Mentor Community (`/mentors`): verified mentor directory, self-service mentor headline/profile,
@@ -19,24 +21,30 @@ shipped versus still open.
   improvements, session results summary, all persisted to `interview_sessions`
 - Admin Analytics (`/admin`, admin-role-gated): KPI cards (total/new users, posts, comments,
   verified mentors, pending verifications), 14-day daily-active-users and post/comment-volume
-  trend charts, popular-topics breakdown (Recharts), a mentor verification queue, and a
-  promote-student-to-mentor search — all backed by `services/adminService.ts` /
-  `adminActions.ts`
+  trend charts, popular-topics breakdown (Recharts), a mentor verification queue, a
+  promote-student-to-mentor search, and company account creation (service-role-provisioned invite,
+  see `services/adminActions.ts`) — all backed by `services/adminService.ts` / `adminActions.ts`
+- Student Dashboard (`/dashboard`): saved posts, mock interview score history, resume versions,
+  and an AI Assistant usage breakdown by function — all pulling from data the other shipped
+  features already produce
+- Notification System (`/notifications`): real-time (Supabase Realtime) in-app notifications for
+  replies and mentor comments on your posts, topbar unread-count bell, mark-as-read / mark-all-read
+  (`database/migrations/0004_notifications_realtime.sql`)
+- Profile (`/profile`): editable display name, bio, and avatar (`avatars` storage bucket)
+- Settings (`/settings`): "post anonymously by default" and notification opt-out preferences
+  (wired into the post/comment composers and the notification triggers), password change, sign out
+  (`database/migrations/0005_settings_preferences.sql`)
 - Full app shell (sidebar/topbar nav, dark mode, high contrast, large text, language selector)
 - Full 18-table normalized schema with RLS on every table, migrated and live
 
-**Still placeholders (real routes + nav entries exist, no feature logic yet):**
-- Company Matching (`/companies`) — anonymous student profiles, consent-based reveal
-- Student Dashboard (`/dashboard`) — saved posts, interview history, resume versions, AI usage
-- Notification System (`/notifications`) — real-time replies/mentor comments/invitations
-- Profile (`/profile`) — full profile editor
-- Settings (`/settings`) — account/privacy/notification preferences
+**Still a placeholder (real route + nav entry exists, feature logic built but not yet verified
+live end-to-end):**
+- Company Matching (`/companies`) — job board + anonymous applications + consent-based identity
+  reveal, admin-provisioned company accounts. Code is complete (`services/companiesService.ts` /
+  `companiesActions.ts`, `database/migrations/0006_company_matching.sql`) but blocked on live
+  verification by a Supabase auth-email rate limit on the test account; not yet confirmed working.
 
-Each of these has a DB schema already in place (see `database/migrations/0001_init.sql`) and a
-`ComingSoon` placeholder page wired into the nav, so building them out is additive — no
-restructuring needed.
-
-Mentor promotion and verification are now handled from `/admin` (see
+Mentor promotion and verification are handled from `/admin` (see
 `database/migrations/0003_admin_mentor_verification.sql` for the RLS policy that unblocked
 admin writes to `mentor_profiles`). A mentor who isn't yet verified can still set up their
 profile from `/mentors`, but won't appear in the public directory until an admin verifies them.

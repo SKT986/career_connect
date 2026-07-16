@@ -1,7 +1,9 @@
 import type {
   AiFunctionType,
+  ApplicationStatus,
   InterviewDifficulty,
   InterviewMode,
+  MatchingStatus,
   NotificationType,
   PostCategory,
   ResumeLanguage,
@@ -120,6 +122,62 @@ export interface NotificationItem {
   type: NotificationType;
   payload: Record<string, unknown>;
   readAt: string | null;
+  createdAt: string;
+}
+
+export interface CompanySummary {
+  id: string;
+  ownerId: string;
+  name: string;
+  description: string | null;
+  website: string | null;
+  createdAt: string;
+}
+
+export interface JobListing {
+  id: string;
+  companyId: string;
+  companyName: string;
+  title: string;
+  description: string | null;
+  location: string | null;
+  createdAt: string;
+  alreadyApplied: boolean;
+}
+
+export interface ApplicantSummary {
+  applicationId: string;
+  studentId: string;
+  label: string;
+  identityRevealed: boolean;
+  status: ApplicationStatus;
+  appliedAt: string;
+  revealStatus: MatchingStatus | null;
+}
+
+export interface JobWithApplicants {
+  id: string;
+  title: string;
+  description: string | null;
+  location: string | null;
+  createdAt: string;
+  applicants: ApplicantSummary[];
+}
+
+export interface ApplicationSummary {
+  id: string;
+  jobId: string;
+  jobTitle: string;
+  companyId: string;
+  companyName: string;
+  status: ApplicationStatus;
+  createdAt: string;
+}
+
+export interface MatchingRequestSummary {
+  companyId: string;
+  companyName: string;
+  status: MatchingStatus;
   createdAt: string;
 }
 

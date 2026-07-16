@@ -3,6 +3,7 @@ import { POST_CATEGORIES } from "@/lib/nav";
 import type {
   AdminOverviewStats,
   CategoryBreakdownPoint,
+  CompanySummary,
   DailyActivityPoint,
   PendingMentorProfile,
   PromotableStudent,
@@ -157,5 +158,24 @@ export async function searchPromotableStudents(query: string): Promise<Promotabl
     profileId: p.id,
     displayName: p.display_name,
     universityEmail: p.university_email,
+  }));
+}
+
+export async function getAllCompanies(): Promise<CompanySummary[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("companies")
+    .select("id, owner_id, name, description, website, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return data.map((c) => ({
+    id: c.id,
+    ownerId: c.owner_id,
+    name: c.name,
+    description: c.description,
+    website: c.website,
+    createdAt: c.created_at,
   }));
 }
