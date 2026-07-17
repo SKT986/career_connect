@@ -6,6 +6,11 @@ shipped versus still open.
 
 ## Status (current)
 
+**Deployed to production on Vercel**, backed by a live Supabase project. Middleware runs on the
+Node.js runtime rather than Edge — `@supabase/supabase-js` uses a Node API (`process.version`)
+that Vercel's actual Edge Runtime doesn't support, which only surfaces as a hard 500 once deployed
+there (not locally), so don't move it back to Edge without confirming that's been fixed upstream.
+
 **Shipped and verified against a live Supabase project, using Anthropic Claude for the AI Assistant (migrated from OpenAI):**
 - Landing, Register/Login (university email), email verification gate,
   self-service password reset (`/forgot-password` → `/set-password`, handles both admin-generated
@@ -14,7 +19,12 @@ shipped versus still open.
 - Post Detail page with threaded replies, including mentor-badged non-anonymous replies
 - Mentor Community (`/mentors`): verified mentor directory, self-service mentor headline/profile,
   AMA session hosting + upcoming-sessions list, mentor success-story posts pulled from the feed
-- AI Career Assistant: streaming chat, 8 functions, EN/JP language support
+- AI Career Assistant: streaming chat that infers intent from the message itself (resume feedback,
+  cover letters, STAR answers, mock interview practice, job recommendations, strengths/weaknesses,
+  general advice — one unified system prompt, no manual mode picker; the earlier 8-button/dropdown
+  function picker was removed since a capable assistant shouldn't need pre-selected modes), voice
+  mode (mic input + read-aloud, EN/JA/Easy-JA, reusing the Mock Interview speech hook), EN/JP
+  language support
 - AI Mock Interview (`/mock-interview`): AI-generated question sets at 3 difficulty levels, text mode
   and voice mode (Web Speech API — question read aloud, spoken answers transcribed in supported
   browsers, graceful fallback to typing elsewhere), structured per-answer scoring with strengths/
@@ -25,7 +35,7 @@ shipped versus still open.
   promote-student-to-mentor search, and company account creation (service-role-provisioned invite,
   see `services/adminActions.ts`) — all backed by `services/adminService.ts` / `adminActions.ts`
 - Student Dashboard (`/dashboard`): saved posts, mock interview score history, resume versions,
-  and an AI Assistant usage breakdown by function — all pulling from data the other shipped
+  and AI Assistant usage (total messages sent, last used) — all pulling from data the other shipped
   features already produce
 - Notification System (`/notifications`): real-time (Supabase Realtime) in-app notifications for
   replies, mentor comments, and company reveal requests, topbar unread-count bell, mark-as-read /
@@ -52,12 +62,7 @@ shipped versus still open.
 
 Every route from the original placeholder list now has real feature logic behind it.
 
-## Pending (open PR, not yet merged)
-- AI Assistant voice mode: mic input for speech-to-text and a "read aloud" button for text-to-speech
-  on chat replies, reusing the `useSpeechRecognition` hook already shipped for Mock Interview
-  (`src/hooks/use-speech-recognition.ts`, now parameterized with a BCP-47 language tag so it can
-  target EN/JA/Easy-JA — Mock Interview's own calls are unchanged and still default to `en-US`).
-  See branch `feature/ai-assistant-voice-mode`; not yet tested with real microphone hardware.
+## Notes
 
 Mentor promotion and verification are handled from `/admin` (see
 `database/migrations/0003_admin_mentor_verification.sql` for the RLS policy that unblocked
