@@ -1,5 +1,4 @@
 import type {
-  AiFunctionType,
   ApplicationStatus,
   InterviewDifficulty,
   InterviewMode,
@@ -113,7 +112,6 @@ export interface ResumeVersionSummary {
 
 export interface AiUsageStats {
   totalMessages: number;
-  byFunctionType: { functionType: AiFunctionType; count: number }[];
   lastUsedAt: string | null;
 }
 
