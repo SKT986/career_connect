@@ -22,12 +22,18 @@ Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui · Framer 
    pnpm install
    ```
 
-2. **Create a Supabase project** at [supabase.com](https://supabase.com), then run the migrations
-   against it (SQL Editor, in order):
+2. **Create a Supabase project** at [supabase.com](https://supabase.com), then run every migration
+   against it (SQL Editor, in order — `0002` also creates the `avatars`/`post-images` storage
+   buckets and their policies, so don't skip it):
 
    ```
    database/migrations/0001_init.sql
    database/migrations/0002_rls.sql
+   database/migrations/0003_admin_mentor_verification.sql
+   database/migrations/0004_notifications_realtime.sql
+   database/migrations/0005_settings_preferences.sql
+   database/migrations/0006_company_matching.sql
+   database/migrations/0007_notifications_insert_policy.sql
    database/seed.sql
    ```
 
@@ -52,6 +58,28 @@ Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui · Framer 
    ```
 
    Open [http://localhost:3000](http://localhost:3000).
+
+## Deploying to Vercel
+
+1. **Push to GitHub** (already done for this repo) and [import the project into Vercel](https://vercel.com/new).
+   Framework, install command (`pnpm install`), and build command (`pnpm build`) are all
+   auto-detected — no `vercel.json` needed.
+2. **Set environment variables** in the Vercel project's Settings → Environment Variables (same
+   keys as `.env.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+   `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (optional), and
+   `NEXT_PUBLIC_SITE_URL` set to your production domain (e.g. `https://your-app.vercel.app`).
+3. **Point Supabase at the production domain** — in the Supabase dashboard, Authentication → URL
+   Configuration: set **Site URL** to your production `NEXT_PUBLIC_SITE_URL`, and add
+   `https://your-app.vercel.app/auth/callback` (and any preview-deployment domains you use) to
+   **Redirect URLs**. Without this, email verification and password-reset links will redirect to
+   the wrong host.
+4. **Know the rate-limiter's limitation**: `src/lib/rate-limit.ts` is an in-memory, per-instance
+   limiter (see comment in that file). On Vercel's serverless runtime this means the AI
+   chat/mock-interview rate limits aren't shared across concurrent function instances — fine for
+   an initial launch, but swap it for a shared store (e.g. Upstash Redis) before real traffic makes
+   that matter.
+5. **Redeploy after any migration change** — Vercel deploys are stateless; database migrations are
+   applied separately via the Supabase SQL Editor (step 2 in Setup above), not by the build.
 
 ## Project structure
 
