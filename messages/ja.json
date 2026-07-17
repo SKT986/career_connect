@@ -14,7 +14,7 @@
     "you": "あなた"
   },
   "nav": {
-    "community": "コミュニティ",
+    "community": "居場所",
     "aiAssistant": "AIアシスタント",
     "mentors": "メンター",
     "mockInterview": "模擬面接",
@@ -56,7 +56,7 @@
   "feed": {
     "all": "すべて",
     "filterByCategory": "カテゴリーで絞り込む",
-    "title": "コミュニティ",
+    "title": "居場所",
     "subtitle": "安心して質問したり、共有したり、支え合える場所です。",
     "searchPlaceholder": "投稿を検索...",
     "emptyTitle": "まだ投稿がありません",

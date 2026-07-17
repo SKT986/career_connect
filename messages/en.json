@@ -14,7 +14,7 @@
     "you": "You"
   },
   "nav": {
-    "community": "Community",
+    "community": "The Space",
     "aiAssistant": "AI Assistant",
     "mentors": "Mentors",
     "mockInterview": "Mock Interview",
@@ -56,7 +56,7 @@
   "feed": {
     "all": "All",
     "filterByCategory": "Filter by category",
-    "title": "Community",
+    "title": "The Space",
     "subtitle": "A safe space to ask, share, and support each other.",
     "searchPlaceholder": "Search posts...",
     "emptyTitle": "No posts here yet",
