@@ -14,7 +14,7 @@
     "you": "あなた"
   },
   "nav": {
-    "community": "みんなの ひろば",
+    "community": "みんなの ばしょ",
     "aiAssistant": "AIに そうだん",
     "mentors": "せんぱい",
     "mockInterview": "めんせつの れんしゅう",
@@ -56,7 +56,7 @@
   "feed": {
     "all": "ぜんぶ",
     "filterByCategory": "カテゴリーで えらぶ",
-    "title": "みんなの ひろば",
+    "title": "みんなの ばしょ",
     "subtitle": "しつもんしたり、はなしたり、たすけあう ばしょです。",
     "searchPlaceholder": "とうこうを さがす...",
     "emptyTitle": "まだ とうこうが ありません",
