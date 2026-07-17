@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/shared/logo";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations("marketing");
@@ -9,11 +9,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Heart className="h-4 w-4" aria-hidden="true" />
-            </span>
-            Career Connect
+          <Link href="/" className="flex items-center text-lg">
+            <Logo />
           </Link>
           <nav aria-label={t("primaryNav")} className="flex items-center gap-2">
             <Button asChild variant="ghost" className="rounded-full">

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/lib/nav";
-import { Heart } from "lucide-react";
+import { Logo } from "@/components/shared/logo";
 
 export function SidebarNav({
   role,
@@ -19,14 +19,8 @@ export function SidebarNav({
 
   return (
     <nav aria-label={t("mainNavigation")} className="flex h-full flex-col gap-1 p-3">
-      <Link
-        href="/feed"
-        className="mb-4 flex items-center gap-2 rounded-xl px-3 py-2 text-lg font-semibold tracking-tight"
-      >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <Heart className="h-4 w-4" aria-hidden="true" />
-        </span>
-        Career Connect
+      <Link href="/feed" className="mb-4 flex items-center rounded-xl px-3 py-2 text-lg">
+        <Logo />
       </Link>
 
       {NAV_ITEMS.filter((item) => !item.adminOnly || role === "admin").map((item) => {
