@@ -7,11 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "@/components/ai/message-bubble";
-import { FunctionPicker } from "@/components/ai/function-picker";
-import { AI_FUNCTIONS } from "@/lib/ai-functions";
 import { useAccessibility } from "@/hooks/use-accessibility";
 import { useSpeechRecognition, speechLangFor } from "@/hooks/use-speech-recognition";
-import type { AiFunctionType } from "@/types/database.types";
 import type { AiMessage } from "@/services/aiService";
 
 interface ChatMessage {
@@ -23,7 +20,6 @@ interface ChatMessage {
 export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }) {
   const t = useTranslations("aiAssistant");
   const { language } = useAccessibility();
-  const [functionType, setFunctionType] = useState<AiFunctionType>("career_advice");
   const [messages, setMessages] = useState<ChatMessage[]>(
     initialMessages.map((m) => ({ id: m.id, role: m.role, content: m.content }))
   );
@@ -61,7 +57,6 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: nextMessages.map((m) => ({ role: m.role, content: m.content })),
-          functionType,
           language,
         }),
       });
@@ -99,18 +94,14 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
     }
   }
 
-  const activeFn = AI_FUNCTIONS.find((f) => f.value === functionType)!;
-
   return (
     <div className="flex h-[calc(100vh-9rem)] flex-col gap-4">
-      <FunctionPicker value={functionType} onChange={setFunctionType} />
-
       <div className="flex min-h-0 flex-1 flex-col rounded-3xl border border-border bg-card">
         <ScrollArea className="flex-1 px-5 py-4">
           <div aria-live="polite" className="flex flex-col gap-4">
             {messages.length === 0 && (
               <div className="rounded-2xl bg-muted px-4 py-3 text-sm text-muted-foreground">
-                {t(activeFn.descriptionKey)}. {t("privacyNote")}
+                {t("privacyNote")}
               </div>
             )}
             {messages.map((m, i) => (

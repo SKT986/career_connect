@@ -4,7 +4,6 @@ import { getChatModel } from "@/lib/anthropic";
 import { buildSystemPrompt } from "@/lib/ai-functions";
 import { isRateLimited } from "@/lib/rate-limit";
 import { saveAiMessage } from "@/services/aiService";
-import type { AiFunctionType } from "@/types/database.types";
 import type { AppLanguage } from "@/hooks/use-accessibility";
 
 export const maxDuration = 60;
@@ -30,7 +29,6 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const messages = body.messages as { role: "user" | "assistant"; content: string }[];
-  const functionType = (body.functionType as AiFunctionType) ?? "career_advice";
   const language = (body.language as AppLanguage) ?? "en";
 
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -43,7 +41,6 @@ export async function POST(request: Request) {
       userId: user.id,
       role: "user",
       content: lastUserMessage.content,
-      functionType,
       language,
     });
   }
@@ -52,14 +49,13 @@ export async function POST(request: Request) {
 
   const result = streamText({
     model: getChatModel(),
-    system: buildSystemPrompt(functionType, language),
+    system: buildSystemPrompt(language),
     messages: modelMessages,
     onFinish: async ({ text }) => {
       await saveAiMessage({
         userId: user.id,
         role: "assistant",
         content: text,
-        functionType,
         language,
       });
     },
