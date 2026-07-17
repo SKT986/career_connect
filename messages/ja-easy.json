@@ -5,6 +5,11 @@
     "cancel": "やめる",
     "comingSoon": "もうすぐ",
     "genericError": "もんだいが おきました。",
+    "genericErrorDescription": "おもいがけない もんだいが おきました。もういちど ためすか、ホームに もどってください。",
+    "tryAgain": "もういちど ためす",
+    "backToHome": "ホームに もどる",
+    "pageNotFoundTitle": "ページが みつかりません",
+    "pageNotFoundDescription": "さがしている ページは ないか、うつった かもしれません。",
     "skipToMainContent": "メインの ないようへ とぶ",
     "you": "あなた"
   },
@@ -158,6 +163,9 @@
     "typeMessagePlaceholder": "メッセージを にゅうりょく...",
     "messageAiAssistant": "AIに メッセージを おくる",
     "send": "おくる",
+    "startVoiceInput": "こえの にゅうりょくを はじめる",
+    "stopVoiceInput": "こえの にゅうりょくを とめる",
+    "readAloud": "メッセージを よみあげる",
     "pageTitle": "AIキャリア アシスタント",
     "pageSubtitle": "りれきしょの アドバイス、めんせつの れんしゅう、しごとの そうだんを、えいごでも にほんごでも、いつでも。"
   },
@@ -180,7 +188,6 @@
     "login": {
       "welcomeBack": "おかえりなさい",
       "subtitle": "あんしんして つかえる ばしょです。サインインして つづけましょう。",
-      "orWithEmail": "または メールアドレスで",
       "forgotPassword": "パスワードを わすれましたか?",
       "signIn": "サインイン",
       "newToCareerConnect": "Career Connectは はじめてですか?",
@@ -357,7 +364,7 @@
     "keyboardScreenReaders": "キーボードと がめん よみあげ",
     "keyboardNote": "Career Connectの すべての そうさできる ぶぶんは、Tabキーで うごけて、はっきり わかる わくが つきます。",
     "skipLinkNote": "「メインの ないようへ とぶ」リンク (さいしょに Tabキーを おすと でてきます) を つかうと、メニューを とばして すすめます。",
-    "voiceModeNote": "めんせつの れんしゅうは もう こえで つかえます。AIアシスタントの よみあげ・こえの にゅうりょくは もうすぐ たいおうします。"
+    "voiceModeNote": "AIアシスタントも めんせつの れんしゅうも、こえで つかえます — しつもんや へんじを よみあげたり、たいおうする ブラウザでは はなした ことを もじに できたりします。"
   },
   "admin": {
     "title": "かんりしゃ ぶんせき",

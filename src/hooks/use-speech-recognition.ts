@@ -1,6 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { AppLanguage } from "@/hooks/use-accessibility";
+
+// BCP-47 tags for the Web Speech API — "ja-easy" has no distinct spoken
+// form, so it maps to the same recognizer/voice as "ja".
+const SPEECH_LANG: Record<AppLanguage, string> = {
+  en: "en-US",
+  ja: "ja-JP",
+  "ja-easy": "ja-JP",
+};
+
+export function speechLangFor(language: AppLanguage): string {
+  return SPEECH_LANG[language];
+}
 
 // Minimal shape of the (non-standard, vendor-prefixed) Web Speech API —
 // TypeScript's DOM lib doesn't ship types for it.
@@ -41,7 +54,7 @@ export function useSpeechRecognition() {
     setIsSupported(getSpeechRecognitionCtor() !== null);
   }, []);
 
-  const start = useCallback(() => {
+  const start = useCallback((lang: string = "en-US") => {
     const Ctor = getSpeechRecognitionCtor();
     if (!Ctor) return;
 
@@ -49,7 +62,7 @@ export function useSpeechRecognition() {
     const recognition = new Ctor();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = "en-US";
+    recognition.lang = lang;
 
     recognition.onresult = (event) => {
       let finalText = "";
@@ -74,10 +87,11 @@ export function useSpeechRecognition() {
   return { isSupported, isListening, transcript, start, stop };
 }
 
-export function speak(text: string) {
+export function speak(text: string, lang: string = "en-US") {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = 0.95;
+  utterance.lang = lang;
   window.speechSynthesis.speak(utterance);
 }

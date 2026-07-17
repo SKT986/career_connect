@@ -5,6 +5,11 @@
     "cancel": "キャンセル",
     "comingSoon": "近日公開",
     "genericError": "問題が発生しました。",
+    "genericErrorDescription": "予期しないエラーが発生しました。もう一度お試しいただくか、ホームに戻ってください。",
+    "tryAgain": "もう一度試す",
+    "backToHome": "ホームに戻る",
+    "pageNotFoundTitle": "ページが見つかりません",
+    "pageNotFoundDescription": "お探しのページは存在しないか、移動した可能性があります。",
     "skipToMainContent": "メインコンテンツへスキップ",
     "you": "あなた"
   },
@@ -158,6 +163,9 @@
     "typeMessagePlaceholder": "メッセージを入力...",
     "messageAiAssistant": "AIアシスタントにメッセージを送る",
     "send": "送信",
+    "startVoiceInput": "音声入力を開始",
+    "stopVoiceInput": "音声入力を停止",
+    "readAloud": "メッセージを読み上げる",
     "pageTitle": "AIキャリアアシスタント",
     "pageSubtitle": "履歴書フィードバック、面接練習、キャリア相談を、英語でも日本語でも、いつでも。"
   },
@@ -180,7 +188,6 @@
     "login": {
       "welcomeBack": "おかえりなさい",
       "subtitle": "あなたのキャリアの旅のための、安心できる場所です。サインインして続けましょう。",
-      "orWithEmail": "またはメールアドレスで",
       "forgotPassword": "パスワードをお忘れですか?",
       "signIn": "サインイン",
       "newToCareerConnect": "Career Connectは初めてですか?",
@@ -357,7 +364,7 @@
     "keyboardScreenReaders": "キーボードとスクリーンリーダー",
     "keyboardNote": "Career Connectのすべての操作可能な要素はTabキーで移動でき、はっきりとしたフォーカスリングが表示されます。",
     "skipLinkNote": "「メインコンテンツへスキップ」リンク(最初にTabキーを押すと表示されます)を使うと、ナビゲーションを飛ばして移動できます。",
-    "voiceModeNote": "模擬面接ではすでに音声モードに対応しています。AIアシスタントの音声読み上げ・音声入力は近日対応予定です。"
+    "voiceModeNote": "AIアシスタントも模擬面接も音声モードに対応しています — 質問や返信を読み上げたり、対応ブラウザでは話した内容をテキストに変換したりできます。"
   },
   "admin": {
     "title": "管理者分析",

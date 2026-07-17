@@ -6,9 +6,7 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { SubmitButton } from "@/components/shared/submit-button";
-import { OAuthButtons } from "@/components/shared/oauth-buttons";
 import { signInAction, type AuthActionState } from "@/services/authService";
 
 const initialState: AuthActionState = {};
@@ -24,13 +22,6 @@ export default function LoginPage() {
         <CardDescription>{t("login.subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <OAuthButtons />
-        <div className="flex items-center gap-3">
-          <Separator className="flex-1" />
-          <span className="text-xs text-muted-foreground">{t("login.orWithEmail")}</span>
-          <Separator className="flex-1" />
-        </div>
-
         <form action={formAction} className="space-y-4" noValidate>
           <div className="space-y-2">
             <Label htmlFor="email">{t("universityEmail")}</Label>

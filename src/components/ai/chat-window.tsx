@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Mic, Square } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,7 @@ import { MessageBubble } from "@/components/ai/message-bubble";
 import { FunctionPicker } from "@/components/ai/function-picker";
 import { AI_FUNCTIONS } from "@/lib/ai-functions";
 import { useAccessibility } from "@/hooks/use-accessibility";
+import { useSpeechRecognition, speechLangFor } from "@/hooks/use-speech-recognition";
 import type { AiFunctionType } from "@/types/database.types";
 import type { AiMessage } from "@/services/aiService";
 
@@ -30,16 +31,22 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { isSupported: speechSupported, isListening, transcript, start, stop } = useSpeechRecognition();
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
+
+  useEffect(() => {
+    if (isListening) setInput(transcript);
+  }, [transcript, isListening]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || isStreaming) return;
 
+    if (isListening) stop();
     setError(null);
     const userMessage: ChatMessage = { id: crypto.randomUUID(), role: "user", content: trimmed };
     const assistantId = crypto.randomUUID();
@@ -139,6 +146,19 @@ export function ChatWindow({ initialMessages }: { initialMessages: AiMessage[] }
             rows={1}
             className="max-h-40 min-h-10 flex-1 resize-none rounded-2xl"
           />
+          {speechSupported && (
+            <Button
+              type="button"
+              size="icon"
+              variant={isListening ? "destructive" : "outline"}
+              className="shrink-0 rounded-full"
+              disabled={isStreaming}
+              onClick={() => (isListening ? stop() : start(speechLangFor(language)))}
+            >
+              {isListening ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              <span className="sr-only">{isListening ? t("stopVoiceInput") : t("startVoiceInput")}</span>
+            </Button>
+          )}
           <Button type="submit" size="icon" className="shrink-0 rounded-full" disabled={isStreaming || !input.trim()}>
             {isStreaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             <span className="sr-only">{t("send")}</span>
