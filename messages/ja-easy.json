@@ -5,6 +5,11 @@
     "cancel": "やめる",
     "comingSoon": "もうすぐ",
     "genericError": "もんだいが おきました。",
+    "genericErrorDescription": "おもいがけない もんだいが おきました。もういちど ためすか、ホームに もどってください。",
+    "tryAgain": "もういちど ためす",
+    "backToHome": "ホームに もどる",
+    "pageNotFoundTitle": "ページが みつかりません",
+    "pageNotFoundDescription": "さがしている ページは ないか、うつった かもしれません。",
     "skipToMainContent": "メインの ないようへ とぶ",
     "you": "あなた"
   },

@@ -5,6 +5,11 @@
     "cancel": "Cancel",
     "comingSoon": "Coming soon",
     "genericError": "Something went wrong.",
+    "genericErrorDescription": "An unexpected error occurred. You can try again, or head back to the home page.",
+    "tryAgain": "Try again",
+    "backToHome": "Back to home",
+    "pageNotFoundTitle": "Page not found",
+    "pageNotFoundDescription": "The page you're looking for doesn't exist or may have moved.",
     "skipToMainContent": "Skip to main content",
     "you": "You"
   },

@@ -5,6 +5,11 @@
     "cancel": "キャンセル",
     "comingSoon": "近日公開",
     "genericError": "問題が発生しました。",
+    "genericErrorDescription": "予期しないエラーが発生しました。もう一度お試しいただくか、ホームに戻ってください。",
+    "tryAgain": "もう一度試す",
+    "backToHome": "ホームに戻る",
+    "pageNotFoundTitle": "ページが見つかりません",
+    "pageNotFoundDescription": "お探しのページは存在しないか、移動した可能性があります。",
     "skipToMainContent": "メインコンテンツへスキップ",
     "you": "あなた"
   },
