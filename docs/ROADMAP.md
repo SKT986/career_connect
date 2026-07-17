@@ -7,7 +7,7 @@ shipped versus still open.
 ## Status (current)
 
 **Shipped and verified against a live Supabase project, using Anthropic Claude for the AI Assistant (migrated from OpenAI):**
-- Landing, Register/Login (university email + Google/GitHub OAuth), email verification gate,
+- Landing, Register/Login (university email), email verification gate,
   self-service password reset (`/forgot-password` → `/set-password`, handles both admin-generated
   invite links and user-initiated recovery links)
 - Anonymous Community Feed: posts, comments, likes, bookmarks, search, category filters, image upload
@@ -71,7 +71,7 @@ profile from `/mentors`, but won't appear in the public directory until an admin
 ### Context
 Career Connect is a greenfield, empty-directory project (`/Users/apple/Desktop/mynavi`, no git repo yet). The full spec covers 14 DB tables, 14 pages, real-time notifications, voice-mode mock interviews, i18n, and admin analytics — realistically weeks of work. Per user decision, this pass delivers:
 - **Full architecture, DB schema, and design system** (spec steps 1–8) so nothing downstream needs to be re-architected later.
-- **A narrow, fully-working MVP slice**: Landing → Auth (Supabase, university email + Google + GitHub, email verification) → Anonymous Community Feed (posts/comments/likes/bookmarks/search/categories/image upload) → AI Career Assistant (streaming GPT chat: resume feedback, interview practice, career advice, job recs, strength/weakness analysis, STAR answers, cover letters, EN/JP).
+- **A narrow, fully-working MVP slice**: Landing → Auth (Supabase, university email, email verification) → Anonymous Community Feed (posts/comments/likes/bookmarks/search/categories/image upload) → AI Career Assistant (streaming GPT chat: resume feedback, interview practice, career advice, job recs, strength/weakness analysis, STAR answers, cover letters, EN/JP).
 - **Every other page** (Mentor, Mock Interview, Company Search, Dashboard, Settings, Accessibility Settings, Notifications, Profile, Admin) gets a real route, real layout/nav entry, and a polished "coming soon" placeholder — so the app shell is complete and future feature work drops into an existing slot rather than requiring restructuring.
 
 User has Supabase + OpenAI credentials ready and will paste them into `.env.local` when I scaffold the project (I will not ask them to paste secrets into chat).
@@ -153,7 +153,7 @@ All tables: `id uuid default gen_random_uuid()`, `created_at timestamptz default
 - Accessibility baked into primitives from the start: visible focus rings, skip-to-content link, `font-scale` CSS variable multiplier, semantic landmarks, aria-live region for AI chat streaming.
 
 ### Auth flow
-1. Register: email/password (validate university domain via regex/allowlist stored in `settings`) or Google/GitHub OAuth.
+1. Register: email/password (validate university domain via regex/allowlist stored in `settings`).
 2. Supabase sends verification email; `profiles.verified_at` set via webhook/callback route once confirmed; unverified users see a "verify your email" gate on `(app)` routes.
 3. `middleware.ts` refreshes session and redirects unauthenticated users from `(app)`/`(admin)` to `/login`, and redirects unverified users to a verify-email screen.
 4. On first login, a Postgres trigger (`handle_new_user`) inserts a `profiles` row with role='student' default and a matching `accessibility_preferences` row.

@@ -42,13 +42,10 @@ Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui · Framer 
    NEXT_PUBLIC_SITE_URL              # http://localhost:3000 in dev
    ```
 
-4. **Enable OAuth providers** (optional) in Supabase → Authentication → Providers: Google and
-   GitHub. Set each provider's redirect URL to `${NEXT_PUBLIC_SITE_URL}/auth/callback`.
-
-5. **Configure allowed university email domains** — edit the `allowed_university_email_domains`
+4. **Configure allowed university email domains** — edit the `allowed_university_email_domains`
    row in the `settings` table (seeded with `["ac.jp", "edu"]`) to match your target schools.
 
-6. **Run the dev server**
+5. **Run the dev server**
 
    ```bash
    pnpm dev
